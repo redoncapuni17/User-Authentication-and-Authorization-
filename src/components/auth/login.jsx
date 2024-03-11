@@ -1,81 +1,108 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { Navigate, Link } from "react-router-dom";
+import { useAuth } from "../../contexts/authContext";
+import { doSignInWithEmailAndPassword } from "../firebase/auth";
 
-function Login({ openForm }) {
+const Login = () => {
+  const { userLoggedIn } = useAuth();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleEmailChange = (e) => {
+  const handleEmail = (e) => {
     setEmail(e.target.value);
-    console.log(e.target.value);
+  };
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
   };
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-    console.log(e.target.value);
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (!isSigningIn) {
+      setIsSigningIn(true);
+      try {
+        await doSignInWithEmailAndPassword(email, password);
+        navigate("/home"); // Navigate to the home page after successful login
+      } catch (error) {
+        setErrorMessage(error.message);
+        setIsSigningIn(false);
+      }
+    }
+    setIsSigningIn(false);
   };
 
   return (
-    <div className="mt-8 bg-white py-8 px-4 shadow-lg rounded-lg sm:px-10 ">
-      <form className=" space-y-6  animate-fade-left ">
-        <h2 className=" text-3xl text-center mb-10 font-extrabold text-gray-900  animate-fade-left ">
-          Log In
-        </h2>
+    <div className="w-full h-screen flex justify-center items-center border border-red-500  ">
+      {userLoggedIn && <Navigate to={"/home"} replace={true} />}
 
-        <div>
-          <input
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:border-blue-300"
-            placeholder="Email"
-            value={email}
-            onChange={handleEmailChange}
-          />
-        </div>
-        <div>
-          <input
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:border-blue-300"
-            placeholder="Password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="text-sm">
-            <a
-              href="#"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
-            >
-              Forgot your password?
-            </a>
+      <main className="w-96 ">
+        <div className="w-96 text-gray-600 space-y-5 p-10 shadow-xl border rounded-xl ">
+          <div className="text-center">
+            <div className="mt-2">
+              <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">
+                Welcome Back
+              </h3>
+            </div>
           </div>
-        </div>
-        <div>
-          <button
-            type="submit"
-            className="w-full py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Log In
-          </button>
-        </div>
-      </form>
+          <form onSubmit={onSubmit} className="space-y-5 animate-fade-left">
+            <div>
+              <label className="text-sm text-gray-600 font-bold">Email</label>
+              <input
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                placeholder="Email"
+                value={email}
+                onChange={handleEmail}
+                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-200"
+              />
+            </div>
 
-      <div className="mt-6 text-center">
-        <button
-          type="button"
-          className="text-sm font-medium rounded-md text-gray-500 hover:text-gray-700  "
-          onClick={openForm}
-        >
-          "Don't have an account? Sign up"
-        </button>
-      </div>
+            <div>
+              <label className="text-sm text-gray-600 font-bold">
+                Password
+              </label>
+              <input
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                placeholder="Password"
+                value={password}
+                onChange={handlePassword}
+                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-200"
+              />
+            </div>
+
+            {errorMessage && (
+              <span className="text-red-600 font-bold">{errorMessage}</span>
+            )}
+
+            <button
+              type="submit"
+              disabled={isSigningIn}
+              className={`w-full px-4 py-2 text-white font-medium rounded-lg ${
+                isSigningIn
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-indigo-600 hover:bg-indigo-700 hover:shadow-xl transition duration-300"
+              }`}
+            >
+              {isSigningIn ? "Signing In..." : "Sign In"}
+            </button>
+          </form>
+          <p className="text-center text-sm">
+            Don't have an account?{" "}
+            <Link to={"/register"} className="hover:underline font-bold">
+              Sign up
+            </Link>
+          </p>
+        </div>
+      </main>
     </div>
   );
-}
+};
 
 export default Login;

@@ -8,7 +8,8 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-export function AuthContext({ children }) {
+export function AuthProvider({ children }) {
+  // Renamed AuthContext to AuthProvider
   const [currentUser, setCurrentUser] = useState(null);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);

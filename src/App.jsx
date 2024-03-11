@@ -1,27 +1,37 @@
-import { useState } from "react";
 import Login from "./components/auth/login";
-import { SignUp } from "./components/auth/signup";
+import Register from "./components/auth/register";
+
+import Logout from "./components/logout/logout";
+import Home from "./components/home/home";
+
+import { AuthProvider } from "./contexts/authContext";
+import { useRoutes } from "react-router-dom";
 
 function App() {
-  const [showSignUp, setShowSignUp] = useState(true);
-
-  const toggleForm = () => {
-    setShowSignUp(!showSignUp);
-  };
-
+  const routesArray = [
+    {
+      path: "*",
+      element: <Login />,
+    },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/register",
+      element: <Register />,
+    },
+    {
+      path: "/home",
+      element: <Home />,
+    },
+  ];
+  let routesElement = useRoutes(routesArray);
   return (
-    <div className="min-h-screen bg-violet-50 flex flex-col items-center justify-center py-12 sm:px-6 lg:px-8  ">
-      <h1 className="text-center text-3xl font-extrabold text-gray-900 ">
-        Welcome
-      </h1>
-      <div className="sm:mx-auto sm:w-full sm:max-w-md  ">
-        {showSignUp ? (
-          <Login openForm={toggleForm} />
-        ) : (
-          <SignUp openForm={toggleForm} />
-        )}
-      </div>
-    </div>
+    <AuthProvider>
+      <div className=" ">{routesElement}</div>
+      <Logout />
+    </AuthProvider>
   );
 }
 
