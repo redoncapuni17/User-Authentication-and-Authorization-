@@ -29,8 +29,10 @@ function App() {
   let routesElement = useRoutes(routesArray);
   return (
     <AuthProvider>
-      <div className=" ">{routesElement}</div>
-      <Logout />
+      <div>
+        {routesElement}
+        <Logout />
+      </div>
     </AuthProvider>
   );
 }
