@@ -3,9 +3,7 @@ import { Navigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/authContext";
 import { doSignInWithEmailAndPassword } from "../firebase/auth";
 
-// import backgroundPhoto from "../../assets/background.jpg";
-
-const Login = () => {
+function Login() {
   const { userLoggedIn } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -40,6 +38,7 @@ const Login = () => {
       {userLoggedIn && <Navigate to={"/home"} replace={true} />}
       <main className="relative py-3 sm:max-w-xl sm:mx-auto ">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl "></div>
+
         <div className="relative  py-10 bg-white shadow-lg sm:rounded-3xl sm:p-16  ">
           <div className="w-72 mx-auto  ">
             <div>
@@ -112,6 +111,6 @@ const Login = () => {
       </main>
     </div>
   );
-};
+}
 
 export default Login;
