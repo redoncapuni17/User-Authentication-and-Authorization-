@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/authContext/index";
 import { db } from "../firebase/firebase";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
+import AdminPage from "./adminPage";
+import UserPage from "./userPage";
 
 function Home() {
   const { currentUser } = useAuth();
   const [userData, setUserData] = useState(null);
-  const [allUsers, setAllUsers] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [showUser, setShowUser] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(false);
+
+  const handleUser = () => {
+    setShowUser(true);
+    setShowDashboard(false);
+  };
+  const handleDashboard = () => {
+    setShowDashboard(true);
+    setShowUser(false);
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -17,7 +28,6 @@ function Home() {
         if (docSnap.exists()) {
           const userData = docSnap.data();
           setUserData(userData);
-          setIsAdmin(userData.role === "admin");
         } else {
           console.log("No such document!");
         }
@@ -26,47 +36,30 @@ function Home() {
       }
     };
 
-    const fetchAllUsers = async () => {
-      try {
-        const usersRef = collection(db, "users");
-        const usersSnapshot = await getDocs(usersRef);
-        const usersList = [];
-        usersSnapshot.forEach((doc) => {
-          usersList.push(doc.data());
-        });
-        setAllUsers(usersList);
-      } catch (error) {
-        console.log("Error getting users: ", error);
-      }
-    };
-
     if (currentUser) {
       fetchUserData();
-      fetchAllUsers();
     }
   }, [currentUser]);
 
   return (
-    <div className="text-2xl font-bold py-5 px-2">
+    <div>
       {userData ? (
-        isAdmin ? (
-          <div>
-            <p>
-              Hello {userData.name}, you are an {userData.role}.
-            </p>
-            <p>Users List :</p>
-            <ul>
-              {allUsers.map((user) => (
-                <li key={user.uid}>{user.name}</li>
-              ))}
-            </ul>
-          </div>
+        userData.role === "admin" ? (
+          <AdminPage
+            userData={userData}
+            showUser={showUser}
+            handleUser={handleUser}
+            showDashboard={showDashboard}
+            handleDashboard={handleDashboard}
+          />
         ) : (
-          <div>
-            <p>
-              Hello {userData.name}, you are a {userData.role}.
-            </p>
-          </div>
+          <UserPage
+            userData={userData}
+            showUser={showUser}
+            handleUser={handleUser}
+            showDashboard={showDashboard}
+            handleDashboard={handleDashboard}
+          />
         )
       ) : (
         <p>Loading...</p>
@@ -74,5 +67,4 @@ function Home() {
     </div>
   );
 }
-
 export default Home;

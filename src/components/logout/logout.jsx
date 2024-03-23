@@ -15,10 +15,10 @@ function Logout() {
               navigate("/login");
             });
           }}
-          className="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 hover:shadow-xl transition duration-300  px-4 py-2 text-white font-medium transition-colors  rounded-lg "
+          className="flex gap-2  items-center"
         >
           <svg
-            className="w-5 h-5 rtl:rotate-180"
+            className="w-5 h-5"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
