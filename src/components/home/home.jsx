@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/authContext/index";
 import { db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import AdminPage from "./adminPage";
-import UserPage from "./userPage";
+import AdminPage from "./Admin/adminPage";
+import UserPage from "./User/userPage";
 
 function Home() {
   const { currentUser } = useAuth();

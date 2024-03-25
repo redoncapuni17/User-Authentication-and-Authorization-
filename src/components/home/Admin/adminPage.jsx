@@ -1,7 +1,10 @@
-import Logout from "../logout/logout";
-import Dashboard from "./dashboard";
-import ListOfUser from "./listofUsers";
-export default function UserPage({
+// AdminPage.js
+import React from "react";
+import Logout from "../../logout/logout";
+import ListOfUser from "../Admin/listofUsers";
+import Dashboard from "../dashboard"; // Import the Dashboard component
+
+export default function AdminPage({
   userData,
   showUser,
   handleUser,
@@ -10,7 +13,7 @@ export default function UserPage({
 }) {
   return (
     <div>
-      <nav className="top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+      <nav className=" w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div className="px-3 py-3 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start rtl:justify-end">
@@ -27,10 +30,10 @@ export default function UserPage({
         </div>
       </nav>
 
-      <div className="flex">
+      <div className="flex ">
         <aside
           id="logo-sidebar"
-          className="w-64 h-screen bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+          className=" w-64 h-screen bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
           aria-label="Sidebar"
         >
           <div className="h-full px-3 pb-4 pt-5 overflow-y-auto bg-white dark:bg-gray-800">

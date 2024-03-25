@@ -1,10 +1,7 @@
-// AdminPage.js
-import React from "react";
-import Logout from "../logout/logout";
-import ListOfUser from "./listofUsers";
-import Dashboard from "./dashboard"; // Import the Dashboard component
-
-export default function AdminPage({
+import Logout from "../../logout/logout";
+import Dashboard from "../dashboard";
+import ListOfUser from "../Admin/listofUsers";
+export default function UserPage({
   userData,
   showUser,
   handleUser,
