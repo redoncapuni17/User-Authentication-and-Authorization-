@@ -9,7 +9,7 @@ function Home() {
   const { currentUser } = useAuth();
   const [userData, setUserData] = useState(null);
   const [showUser, setShowUser] = useState(false);
-  const [showDashboard, setShowDashboard] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(true);
 
   const handleUser = () => {
     setShowUser(true);

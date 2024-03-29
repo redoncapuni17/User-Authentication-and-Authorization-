@@ -1,12 +1,11 @@
-// ListOfUser.js
-
 import { useEffect, useState } from "react";
-
 import { db } from "../../firebase/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 export default function ListOfUser({ currentUser }) {
   const [allUsers, setAllUsers] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [filteredTable, setFilteredTable] = useState([]);
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -27,6 +26,21 @@ export default function ListOfUser({ currentUser }) {
       fetchAllUsers();
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    // Filter by search input
+    const filteredData = allUsers.filter((user) =>
+      user.name.toLowerCase().includes(searchInput.toLowerCase())
+    );
+
+    // Filter further by selected congress
+
+    setFilteredTable(filteredData);
+  }, [searchInput, allUsers]);
+
+  const handleFilteredInput = (e) => {
+    setSearchInput(e.target.value);
+  };
 
   return (
     <div className="h-screen w-full p-4 ">
@@ -55,44 +69,67 @@ export default function ListOfUser({ currentUser }) {
               type="text"
               className="w-80 px-10 py-2  border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
               placeholder="Search branch name..."
+              value={searchInput}
+              onChange={handleFilteredInput}
             />
           </div>
-          <button
-            type="submit"
-            className="p-2.5 ms-2 text-sm font-medium text-white bg-indigo-500 rounded-lg  hover:bg-indigo-600 focus:ring-4 focus:outline-none "
-          >
-            <svg
-              className="w-4 h-4"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 20 20"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-              />
-            </svg>
-          </button>
         </form>
-        <label className="w-28 flex justify-center items-center bg-indigo-500 text-white font-semibold px-4 py-2 rounded-md hover:bg-indigo-600 transition duration-300">
-          Filter
-        </label>
+        <form className="flex items-center">
+          <select className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500">
+            <option>Filter by Users</option>
+            <option>Filter by Congress</option>
+          </select>
+        </form>
       </div>
-      <ul>
-        {allUsers.map((user) => (
-          <li
-            key={user.uid}
-            className="flex items-center justify-between py-2 border-b"
-          >
-            <span className="text-gray-800">{user.name}</span>
-            <span className="text-gray-500">{user.email}</span>
-          </li>
-        ))}
-      </ul>
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
+              Name
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
+              Email
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-bold text-gray-900uppercase tracking-wider">
+              ID
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
+              Role
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
+              Joined Congress
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {filteredTable.map(
+            (user) =>
+              user.role !== "admin" && (
+                <tr key={user.uid}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {user.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {user.email}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {user.uid}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {user.role}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {user.joinCongress
+                      ? user.joinCongress
+                          .map((congress) => congress.name)
+                          .join(", ")
+                      : "No join yet"}
+                  </td>
+                </tr>
+              )
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }

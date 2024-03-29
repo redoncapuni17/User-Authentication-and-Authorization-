@@ -1,6 +1,7 @@
 import Logout from "../../logout/logout";
-import Dashboard from "../dashboard";
-import ListOfUser from "../Admin/listofUsers";
+import ListOfCongress from "./listofCongress";
+import UserDashboard from "./userDashboard";
+
 export default function UserPage({
   userData,
   showUser,
@@ -96,9 +97,9 @@ export default function UserPage({
           </div>
         </aside>
         <main className="flex w-full ">
-          {showDashboard && <Dashboard userData={userData} />}
+          {showDashboard && <UserDashboard userData={userData} />}
 
-          {showUser && <ListOfUser currentUser={userData} />}
+          {showUser && <ListOfCongress currentUser={userData} />}
         </main>
       </div>
     </div>

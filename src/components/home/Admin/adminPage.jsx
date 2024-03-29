@@ -1,8 +1,9 @@
 // AdminPage.js
 import React from "react";
 import Logout from "../../logout/logout";
-import ListOfUser from "../Admin/listofUsers";
-import Dashboard from "../dashboard"; // Import the Dashboard component
+import ListOfUser from "./listofUsers";
+
+import AdminDashboard from "./adminDashboard";
 
 export default function AdminPage({
   userData,
@@ -99,7 +100,7 @@ export default function AdminPage({
           </div>
         </aside>
         <main className="flex w-full ">
-          {showDashboard && <Dashboard userData={userData} />}
+          {showDashboard && <AdminDashboard userData={userData} />}
 
           {showUser && <ListOfUser currentUser={userData} />}
         </main>
