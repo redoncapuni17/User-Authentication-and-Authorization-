@@ -1,13 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { db } from "../../firebase/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  doc,
+  updateDoc,
+  getDocs,
+} from "firebase/firestore";
 
-export default function EventForm({ addCongress, adminUid }) {
+export default function EventForm({
+  addCongress,
+  adminUid,
+  editCongress,
+  updateCongressList,
+}) {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [contactInfo, setContactInfo] = useState("");
+  const [isExistingCongress, setIsExistingCongress] = useState(false);
+
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
+
+  useEffect(() => {
+    if (editCongress) {
+      setName(editCongress.name);
+      setAddress(editCongress.address);
+      setStartTime(editCongress.startTime);
+      setEndTime(editCongress.endTime);
+      setContactInfo(editCongress.contactInfo);
+      setShowUpdateForm(true);
+    }
+  }, [editCongress]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,10 +56,23 @@ export default function EventForm({ addCongress, adminUid }) {
     try {
       // Add new Congress to the Firestore collection
       const congressRef = collection(db, "congress");
-      await addDoc(congressRef, newCongress); // Firestore will generate a unique ID for the document
-      console.log("Congress created");
+      const querySnapshot = await getDocs(congressRef);
+      const existingCongress = querySnapshot.docs.find(
+        (doc) => doc.data().name === name
+      );
 
-      addCongress(newCongress);
+      if (existingCongress) {
+        setIsExistingCongress(true);
+        return;
+      }
+      {
+        await addDoc(congressRef, newCongress);
+
+        console.log("Congress created");
+
+        addCongress(newCongress);
+      }
+
       setName("");
       setAddress("");
       setStartTime("");
@@ -45,11 +83,48 @@ export default function EventForm({ addCongress, adminUid }) {
     }
   };
 
+  const handleUpdateCongress = async (e) => {
+    e.preventDefault();
+    if (!adminUid) {
+      console.log("adminUid is undefined");
+      return;
+    }
+
+    const updatedCongress = {
+      ...editCongress,
+      name: name,
+      address: address,
+      startTime: startTime,
+      endTime: endTime,
+      contactInfo: contactInfo,
+      adminUid: adminUid,
+    };
+
+    try {
+      const updatedRef = doc(db, "congress", editCongress.id);
+      await updateDoc(updatedRef, updatedCongress);
+      console.log("Congress Updated");
+
+      // Update the Congress list in the parent component
+      updateCongressList(updatedCongress);
+
+      // After update set the Form null
+      setName("");
+      setAddress("");
+      setStartTime("");
+      setEndTime("");
+      setContactInfo("");
+      setShowUpdateForm(false);
+    } catch (error) {
+      console.log("Error updating congress: ", error);
+    }
+  };
+
   return (
     <div className="w-11/12  bg-white rounded-lg  ">
       <h2 className="text-xl font-bold mb-4">Event Form</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
+      <form onSubmit={showUpdateForm ? handleUpdateCongress : handleSubmit}>
+        <div className="">
           <label
             htmlFor="name"
             className="block text-gray-700 font-semibold mb-2"
@@ -61,11 +136,14 @@ export default function EventForm({ addCongress, adminUid }) {
             id="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            className={`w-full px-4 py-2 border border-gray-300 ${
+              isExistingCongress ? "border border-red-500 " : ""
+            } rounded-md focus:outline-none focus:border-indigo-500`}
             placeholder="Enter name of event"
             required
           />
         </div>
+
         <div className="mb-4">
           <label
             htmlFor="address"
@@ -113,7 +191,7 @@ export default function EventForm({ addCongress, adminUid }) {
             </section>
           </div>
         </div>
-        <div className="mb-4">
+        <div className="">
           <label
             htmlFor="contactInfo"
             className="block text-sm text-gray-700 font-semibold mb-2"
@@ -130,13 +208,29 @@ export default function EventForm({ addCongress, adminUid }) {
             required
           />
         </div>
+        {isExistingCongress ? (
+          <p className="text-red-500  text-xs mb-3">
+            Congress with same name alredy exists
+          </p>
+        ) : (
+          <p className="text-green-500  text-xs mb-3">Successfully Created</p>
+        )}
 
-        <button
-          type="submit"
-          className="w-full bg-indigo-500 text-white font-semibold px-4 py-2 rounded-md hover:bg-indigo-600 transition duration-300"
-        >
-          Submit
-        </button>
+        {showUpdateForm ? (
+          <button
+            type="submit"
+            className="w-full bg-indigo-500 text-white font-semibold px-4 py-2 rounded-md hover:bg-indigo-600 transition duration-300"
+          >
+            Update
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="w-full bg-indigo-500 text-white font-semibold px-4 py-2 rounded-md hover:bg-indigo-600 transition duration-300"
+          >
+            Submit
+          </button>
+        )}
       </form>
     </div>
   );

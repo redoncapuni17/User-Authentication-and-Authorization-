@@ -1,51 +1,69 @@
 import { FaTrash } from "react-icons/fa";
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebase/firebase";
-import {
-  collection,
-  getDocs,
-  doc,
-  updateDoc,
-  arrayRemove,
-} from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 export default function ListOfCongress({ currentUser }) {
-  const [allCongress, setAllCongress] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [filteredTable, setFilteredTable] = useState([]);
+  const [joinedCongress, setJoinedCongress] = useState([]);
 
   useEffect(() => {
-    const fetchAllCongress = async () => {
+    const fetchJoinedCongress = async () => {
       try {
-        const usersRef = collection(db, "congress");
-        const usersSnapshot = await getDocs(usersRef);
-        const congressList = [];
-        usersSnapshot.forEach((doc) => {
-          congressList.push({ uid: doc.id, ...doc.data() });
-        });
-        setAllCongress(congressList);
+        if (!currentUser || !currentUser.uid) {
+          console.error("No user or user ID available.");
+          return;
+        }
+
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDocSnapshot = await getDoc(userDocRef);
+
+        if (userDocSnapshot.exists()) {
+          const userData = userDocSnapshot.data();
+          if (userData.joinCongress) {
+            setJoinedCongress(userData.joinCongress);
+          } else {
+            console.log("No joined congress data found for the user.");
+          }
+        } else {
+          console.log("User document does not exist.");
+        }
       } catch (error) {
-        console.log("Error getting users: ", error);
+        console.error("Error fetching joined congress: ", error);
       }
     };
 
     if (currentUser) {
-      fetchAllCongress();
+      fetchJoinedCongress();
     }
   }, [currentUser]);
 
   const handleDeleteCongress = async (congress) => {
-    console.log("Congress to be deleted:", congress); // Debugging statement
-
     try {
       const userDocRef = doc(db, "users", currentUser.uid);
-      await updateDoc(userDocRef, {
-        joinedCongress: arrayRemove({
-          id: congress.id,
-          name: congress.name,
-        }),
-      });
-      console.log("Joined congress deleted successfully");
+
+      // Get the user document
+      const userDocSnapshot = await getDoc(userDocRef);
+
+      if (userDocSnapshot.exists()) {
+        // Get the current user data
+        const userData = userDocSnapshot.data();
+
+        // Remove the selected congress from the joinCongress array
+        const updatedJoinCongress = userData.joinCongress.filter(
+          (c) => c.id !== congress.id
+        );
+
+        // Update the user document with the modified joinCongress array
+        await updateDoc(userDocRef, {
+          joinCongress: updatedJoinCongress,
+        });
+
+        console.log("Joined congress deleted successfully");
+      } else {
+        console.log("User document does not exist.");
+      }
     } catch (error) {
       console.error("Error deleting congress: ", error);
     }
@@ -53,12 +71,12 @@ export default function ListOfCongress({ currentUser }) {
 
   useEffect(() => {
     // Filter by search input
-    const filteredData = allCongress.filter((congress) =>
+    const filteredData = joinedCongress.filter((congress) =>
       congress.name.toLowerCase().includes(searchInput.toLowerCase())
     );
 
     setFilteredTable(filteredData);
-  }, [searchInput, allCongress]);
+  }, [searchInput, joinedCongress]);
 
   const handleFilteredInput = (e) => {
     setSearchInput(e.target.value);
@@ -66,7 +84,7 @@ export default function ListOfCongress({ currentUser }) {
 
   return (
     <div className="h-screen w-full p-4">
-      <h2 className="text-xl font-semibold mb-4">Congress Lists</h2>
+      <h2 className="text-xl font-semibold mb-4">Joined Congress Details </h2>
       <div className="flex justify-between p-4">
         <form className="flex items-center w-96">
           <div className="relative w-full">
@@ -122,7 +140,7 @@ export default function ListOfCongress({ currentUser }) {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {filteredTable.map((congress) => (
-            <tr key={congress.uid}>
+            <tr key={congress.id}>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
                 {congress.name}
               </td>

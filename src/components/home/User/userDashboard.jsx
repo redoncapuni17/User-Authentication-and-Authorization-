@@ -4,7 +4,7 @@ import { Suspense, lazy, useEffect, useState } from "react";
 import { db } from "../../firebase/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
-export default function UserDashboard({ userData }) {
+export default function UserDashboard({ currentUser }) {
   const [congressLists, setCongressLists] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [filteredCongressLists, setFilteredCongressLists] = useState([]);
@@ -44,7 +44,7 @@ export default function UserDashboard({ userData }) {
             <div className="sm:flex sm:items-center px-6 py-4  ">
               <div className="text-center sm:text-left sm:flex-grow  ">
                 <h2 className="text-3xl font-bold text-gray-100 mb-2">
-                  Welcome, {userData.name}!
+                  Welcome, {currentUser.name}!
                 </h2>
                 <p className="text-sm text-gray-300">
                   Here's your personalized dashboard.
@@ -57,7 +57,7 @@ export default function UserDashboard({ userData }) {
           Click on the Congress Card to Join
         </span>
 
-        <CongresUser congressData={congressLists} currentUser={userData} />
+        <CongresUser congressData={congressLists} currentUser={currentUser} />
       </main>
     </div>
   );

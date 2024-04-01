@@ -100,7 +100,7 @@ export default function AdminPage({
           </div>
         </aside>
         <main className="flex w-full ">
-          {showDashboard && <AdminDashboard userData={userData} />}
+          {showDashboard && <AdminDashboard currentUser={userData} />}
 
           {showUser && <ListOfUser currentUser={userData} />}
         </main>

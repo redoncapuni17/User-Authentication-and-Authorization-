@@ -74,12 +74,6 @@ export default function ListOfUser({ currentUser }) {
             />
           </div>
         </form>
-        <form className="flex items-center">
-          <select className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500">
-            <option>Filter by Users</option>
-            <option>Filter by Congress</option>
-          </select>
-        </form>
       </div>
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">

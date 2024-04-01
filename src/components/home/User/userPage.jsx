@@ -97,7 +97,7 @@ export default function UserPage({
           </div>
         </aside>
         <main className="flex w-full ">
-          {showDashboard && <UserDashboard userData={userData} />}
+          {showDashboard && <UserDashboard currentUser={userData} />}
 
           {showUser && <ListOfCongress currentUser={userData} />}
         </main>

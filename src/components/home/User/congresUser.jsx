@@ -103,7 +103,7 @@ export default function CongresUser({ congressData, currentUser }) {
             ``
           ) : (
             <div className="w-96 h-96 p-5 justify-center   border-r-2 border-gray-300  ">
-              <section className=" w-full flex flex-col py-7 px-2 h-60  border border-gray-200 mt-5 bg-gray-50 shadow-xl rounded-md  ">
+              <section className=" w-full flex flex-col py-7 px-2 h-60 bg-gradient-to-r from-blue-100 to-blue-200  mt-5 bg-gray-50 shadow-xl rounded-md  ">
                 <div className="flex  pl-1  mb-2   text-2xl font-bold border-l-4  border-blue-500">
                   {selectedCongress.name}
                 </div>
