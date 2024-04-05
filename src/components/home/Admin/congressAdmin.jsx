@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import DropDownMenu from "./dropDownMenu.jsx";
 
@@ -9,60 +9,77 @@ export default function CongressAdmin({
   setOpenDropDownMenu,
   handleEditCongress,
 }) {
-  // Update toggleDropDown function to handle opening the edit form
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef();
+
   const toggleDropDown = (index) => {
     setOpenDropDownMenu(openDropDownMenu === index ? null : index);
+    setIsMenuOpen(openDropDownMenu === index);
   };
 
-  // Handle edit congress
   const handleEdit = (congressId) => {
     handleEditCongress(congressId);
-    setOpenDropDownMenu(null); // Close the dropdown menu after selecting "Edit"
+    setOpenDropDownMenu(null);
+    setIsMenuOpen(false);
   };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+        setOpenDropDownMenu(null);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef]);
 
   return (
     <main>
-      <header className="flex font-bold pl-3">
-        <span className="text-center w-48">Name</span>
-        <span className="text-center w-48">Contact Info</span>
-        <span className="text-center w-48">Address</span>
-        <span className="text-center w-48">Time</span>
-      </header>
-      <div className="h-96 overflow-scroll no-scrollbar border-t-2 border-gray-500">
-        <ul className="px-5">
+      <div className="border border-gray-100 rounded-md bg-gray-50 font-normal">
+        <ul className="px-2 overflow-scroll no-scrollbar h-96 ">
           {congressLists.map((congress, index) => (
             <li
               key={index}
-              className="relative flex justify-between items-center pl-3 mt-3 bg-gradient-to-r from-blue-50 to-blue-200 shadow-lg rounded-lg transition-all"
+              className="relative flex  sm:flex-row justify-between  my-5 bg-gradient-to-r from-blue-50 to-blue-200 shadow-lg rounded-lg transition-all"
             >
-              <span className="flex justify-center w-48">{congress.name}</span>
-              <span className="flex justify-center w-48">
-                {congress.contactInfo}
-              </span>
-              <span className="flex justify-center w-48">
-                {congress.address}
-              </span>
-              <span className="flex justify-center w-40">
-                From <b>&nbsp;{congress.startTime}&nbsp; </b> to
-                <b>&nbsp;{congress.endTime} </b>
-              </span>
+              <div className="h-40 sm:h-auto pt-3 sm:p-0 flex flex-col justify-between items-center sm:flex-row w-full ">
+                <span className="w-full sm:pl-5  sm:text-base text-3xl sm:w-2/6 text-center sm:text-left  font-medium">
+                  {congress.name}
+                </span>
+                <span className="w-full sm:w-2/6 text-center sm:text-left ">
+                  {congress.contactInfo}
+                </span>
+                <span className="w-full sm:w-1/6 text-center sm:text-left">
+                  {congress.address}
+                </span>
+                <span className=" w-full sm:w-1/4  text-center sm:text-left ">
+                  From <b>&nbsp;{congress.startTime}&nbsp; </b> to
+                  <b>&nbsp;{congress.endTime} </b>
+                </span>
+              </div>
               <div
-                className={`hover:bg-blue-400 p-3 cursor-pointer rounded-r-lg ${
-                  openDropDownMenu === index ? "bg-blue-400" : ""
+                className={`h-10 rounded-full    p-3 cursor-pointer   ${
+                  isMenuOpen ? "bg-blue-400" : ""
                 }`}
                 onClick={() => toggleDropDown(index)}
               >
                 <BsThreeDotsVertical />
               </div>
-              {openDropDownMenu === index ? (
-                <DropDownMenu
-                  onEdit={() => {
-                    handleEdit(congress.id);
-                  }}
-                  onDelete={() => handleDeleteCongress(congress.id)} // Check if congress.id is defined before calling handleDeleteCongress
-                />
-              ) : (
-                ""
+              {openDropDownMenu === index && (
+                <div ref={menuRef}>
+                  <DropDownMenu
+                    onEdit={() => {
+                      handleEdit(congress.id);
+                    }}
+                    onDelete={() => {
+                      handleDeleteCongress(congress.id);
+                    }}
+                  />
+                </div>
               )}
             </li>
           ))}

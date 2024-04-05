@@ -1,6 +1,8 @@
+import { Suspense, lazy, useState } from "react";
 import Logout from "../../logout/logout";
-import ListOfCongress from "./listofCongress";
-import UserDashboard from "./userDashboard";
+
+const LazyUserDashboard = lazy(() => import("./userDashboard"));
+const LazyListOfCongress = lazy(() => import("./listofCongress"));
 
 export default function UserPage({
   userData,
@@ -9,12 +11,54 @@ export default function UserPage({
   showDashboard,
   handleDashboard,
 }) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div>
-      <nav className="top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+      <nav className=" bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div className="px-3 py-3 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start rtl:justify-end">
+              <button
+                onClick={toggleSidebar}
+                className="text-gray-500 dark:text-white focus:outline-none focus:text-gray-600 dark:focus:text-gray-400"
+              >
+                {isSidebarOpen ? (
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 6h16M4 12h16m-7 6h7"
+                    />
+                  </svg>
+                )}
+              </button>
               <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
                 Home Page
               </span>
@@ -30,11 +74,14 @@ export default function UserPage({
 
       <div className="flex">
         <aside
-          id="logo-sidebar"
-          className="w-64 h-screen bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+          className={`${
+            isSidebarOpen
+              ? "w-36 h-screen absolute dark:bg-gray-800   sm:w-56 z-10 opacity-90  sm:opacity-100"
+              : "hidden"
+          } bg-white border-r sm:relative border-gray-200 sm:translate-x-0 `}
           aria-label="Sidebar"
         >
-          <div className="h-full px-3 pb-4 pt-5 overflow-y-auto bg-white dark:bg-gray-800">
+          <div className=" px-3  pt-5  bg-white dark:bg-gray-800">
             <ul className="space-y-2 font-medium">
               <li
                 onClick={handleDashboard}
@@ -97,9 +144,17 @@ export default function UserPage({
           </div>
         </aside>
         <main className="flex w-full ">
-          {showDashboard && <UserDashboard currentUser={userData} />}
+          {showDashboard && (
+            <Suspense fallback={<p>Loading...</p>}>
+              <LazyUserDashboard currentUser={userData} />
+            </Suspense>
+          )}
 
-          {showUser && <ListOfCongress currentUser={userData} />}
+          {showUser && (
+            <Suspense fallback={<p>Loading...</p>}>
+              <LazyListOfCongress currentUser={userData} />
+            </Suspense>
+          )}
         </main>
       </div>
     </div>

@@ -1,13 +1,10 @@
-import CongresUser from "./congresUser.jsx";
 import { Suspense, lazy, useEffect, useState } from "react";
-
 import { db } from "../../firebase/firebase";
 import { collection, getDocs } from "firebase/firestore";
+const LazyCongressUser = lazy(() => import("./congresUser"));
 
 export default function UserDashboard({ currentUser }) {
   const [congressLists, setCongressLists] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
-  const [filteredCongressLists, setFilteredCongressLists] = useState([]);
 
   // Function to fetch congress data from Firestore
   const fetchCongressData = async () => {
@@ -29,20 +26,13 @@ export default function UserDashboard({ currentUser }) {
     fetchCongressData();
   }, []);
 
-  useEffect(() => {
-    // Filter congress list based on search input
-    const filteredCongress = congressLists.filter((congress) =>
-      congress.name.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    setFilteredCongressLists(filteredCongress);
-  }, [searchInput, congressLists]);
   return (
     <div className="w-full justify-center">
       <main className="flex flex-col">
         <header className="flex p-5">
-          <div className="flex w-full h-36 bg-gradient-to-r from-gray-600 to-gray-800 shadow-lg rounded-lg overflow-hidden">
-            <div className="sm:flex sm:items-center px-6 py-4  ">
-              <div className="text-center sm:text-left sm:flex-grow  ">
+          <div className="flex px-6 py-4 w-full bg-gradient-to-r from-gray-600 to-gray-800 shadow-lg rounded-lg overflow-hidden">
+            <div className="sm:flex sm:items-center px-6 py-4">
+              <div className="text-center sm:text-left sm:flex-grow font-mono">
                 <h2 className="text-3xl font-bold text-gray-100 mb-2">
                   Welcome, {currentUser.name}!
                 </h2>
@@ -53,11 +43,16 @@ export default function UserDashboard({ currentUser }) {
             </div>
           </div>
         </header>
-        <span className="flex justify-center text-3xl font-bold mb-2">
+        <span className="flex justify-center px-5 text-3xl font-bold mb-2">
           Click on the Congress Card to Join
         </span>
 
-        <CongresUser congressData={congressLists} currentUser={currentUser} />
+        <Suspense fallback={<p>Loading...</p>}>
+          <LazyCongressUser
+            congressData={congressLists}
+            currentUser={currentUser}
+          />
+        </Suspense>
       </main>
     </div>
   );

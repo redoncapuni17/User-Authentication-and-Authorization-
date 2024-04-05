@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import { useAuth } from "../../contexts/authContext/index";
 import { db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import AdminPage from "./Admin/adminPage";
-import UserPage from "./User/userPage";
+
+const LazyAdminPage = lazy(() => import("./Admin/adminPage"));
+const LazyUserPage = lazy(() => import("./User/userPage"));
 
 function Home() {
   const { currentUser } = useAuth();
@@ -45,21 +46,25 @@ function Home() {
     <div>
       {userData ? (
         userData.role === "admin" ? (
-          <AdminPage
-            userData={userData}
-            showUser={showUser}
-            handleUser={handleUser}
-            showDashboard={showDashboard}
-            handleDashboard={handleDashboard}
-          />
+          <Suspense fallback={<p>Loading...</p>}>
+            <LazyAdminPage
+              userData={userData}
+              showUser={showUser}
+              handleUser={handleUser}
+              showDashboard={showDashboard}
+              handleDashboard={handleDashboard}
+            />
+          </Suspense>
         ) : (
-          <UserPage
-            userData={userData}
-            showUser={showUser}
-            handleUser={handleUser}
-            showDashboard={showDashboard}
-            handleDashboard={handleDashboard}
-          />
+          <Suspense fallback={<p>Loading...</p>}>
+            <LazyUserPage
+              userData={userData}
+              showUser={showUser}
+              handleUser={handleUser}
+              showDashboard={showDashboard}
+              handleDashboard={handleDashboard}
+            />
+          </Suspense>
         )
       ) : (
         <p>Loading...</p>

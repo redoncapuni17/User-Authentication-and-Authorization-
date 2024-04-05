@@ -60,6 +60,9 @@ export default function ListOfCongress({ currentUser }) {
           joinCongress: updatedJoinCongress,
         });
 
+        // Update the state to reflect the change
+        setJoinedCongress(updatedJoinCongress);
+
         console.log("Joined congress deleted successfully");
       } else {
         console.log("User document does not exist.");
@@ -83,7 +86,7 @@ export default function ListOfCongress({ currentUser }) {
   };
 
   return (
-    <div className="h-screen w-full p-4">
+    <div className="h-screen w-full p-4 ">
       <h2 className="text-xl font-semibold mb-4">Joined Congress Details </h2>
       <div className="flex justify-between p-4">
         <form className="flex items-center w-96">
