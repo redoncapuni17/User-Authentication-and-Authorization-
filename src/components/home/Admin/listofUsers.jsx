@@ -17,6 +17,7 @@ export default function ListOfUser({ currentUser }) {
         usersSnapshot.forEach((doc) => {
           usersList.push({ uid: doc.id, ...doc.data() });
         });
+
         setAllUsers(usersList);
       } catch (error) {
         console.log("Error getting users: ", error);
@@ -42,8 +43,8 @@ export default function ListOfUser({ currentUser }) {
     setSearchInput(e.target.value);
   };
 
-  const handleMouseEnter = (congress) => {
-    setHoveredCongress(congress);
+  const handleMouseEnter = (congresses) => {
+    setHoveredCongress(congresses);
   };
 
   const handleMouseLeave = () => {
@@ -52,7 +53,7 @@ export default function ListOfUser({ currentUser }) {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-xl font-semibold mb-4">Users List</h2>
+      <h2 className="text-3xl font-semibold mb-4 cursor-default">Users List</h2>
       <div className="flex flex-col md:flex-row justify-between p-4">
         <form className="flex items-center w-full md:w-96 mb-4 md:mb-0">
           <div className="relative w-full">
@@ -109,7 +110,7 @@ export default function ListOfUser({ currentUser }) {
               (user) =>
                 user.role !== "admin" && (
                   <tr key={user.uid}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 ">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 cursor-default ">
                       {user.name}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -131,15 +132,16 @@ export default function ListOfUser({ currentUser }) {
                           {user.joinCongress
                             .map((congress) => congress.name)
                             .join(", ")}
-                          {hoveredCongress && (
-                            <div className="absolute bg-white border rounded p-2 shadow-md font-medium">
-                              <ul>
-                                {hoveredCongress.map((congress) => (
-                                  <li key={congress.id}>{congress.name}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
+                          {hoveredCongress &&
+                            user.joinCongress === hoveredCongress && (
+                              <div className="absolute bg-white border rounded p-2 shadow-md font-medium">
+                                <ul>
+                                  {hoveredCongress.map((congress) => (
+                                    <li key={congress.id}>{congress.name}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
                         </div>
                       ) : (
                         "No join yet"

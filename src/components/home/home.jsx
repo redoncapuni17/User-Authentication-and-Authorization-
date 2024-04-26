@@ -46,7 +46,13 @@ function Home() {
     <div>
       {userData ? (
         userData.role === "admin" ? (
-          <Suspense fallback={<p>Loading...</p>}>
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-screen">
+                Loading...
+              </div>
+            }
+          >
             <LazyAdminPage
               userData={userData}
               showUser={showUser}
@@ -56,7 +62,13 @@ function Home() {
             />
           </Suspense>
         ) : (
-          <Suspense fallback={<p>Loading...</p>}>
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-screen">
+                Loading...
+              </div>
+            }
+          >
             <LazyUserPage
               userData={userData}
               showUser={showUser}
@@ -67,7 +79,7 @@ function Home() {
           </Suspense>
         )
       ) : (
-        <p>Loading...</p>
+        ""
       )}
     </div>
   );

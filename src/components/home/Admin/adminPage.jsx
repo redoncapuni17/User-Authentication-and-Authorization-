@@ -59,14 +59,14 @@ export default function AdminPage({
                   </svg>
                 )}
               </button>
-              <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
+              <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white cursor-default">
                 Home Page
               </span>
             </div>
             <div className="flex items-center">
               <div className="flex items-center ms-3">
-                <div className="text-white">
-                  You are <span className="text-red-500">{userData.role}</span>
+                <div className="text-white cursor-default">
+                  You are <span className="text-red-500 ">{userData.role}</span>
                 </div>
               </div>
             </div>
@@ -78,10 +78,9 @@ export default function AdminPage({
         <aside
           className={`${
             isSidebarOpen
-              ? "w-36 h-screen absolute dark:bg-gray-800   sm:w-56 z-10 opacity-90  sm:opacity-100"
+              ? "w-44 h-dvh absolute dark:bg-gray-800   sm:w-56 z-10 opacity-90  sm:opacity-100"
               : "hidden"
-          } bg-white border-r sm:relative border-gray-200 sm:translate-x-0 `}
-          aria-label="Sidebar"
+          } bg-white border-r  sm:relative border-gray-200 sm:translate-x-0  `}
         >
           <div className="px-3 pb-4 pt-5  ">
             <ul className="space-y-2 font-medium">

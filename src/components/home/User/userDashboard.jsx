@@ -33,7 +33,7 @@ export default function UserDashboard({ currentUser }) {
           <div className="flex px-6 py-4 w-full bg-gradient-to-r from-gray-600 to-gray-800 shadow-lg rounded-lg overflow-hidden">
             <div className="sm:flex sm:items-center px-6 py-4">
               <div className="text-center sm:text-left sm:flex-grow font-mono">
-                <h2 className="text-3xl font-bold text-gray-100 mb-2">
+                <h2 className="text-3xl font-bold text-gray-100 mb-2 cursor-default">
                   Welcome, {currentUser.name}!
                 </h2>
                 <p className="text-sm text-gray-300">
@@ -43,7 +43,7 @@ export default function UserDashboard({ currentUser }) {
             </div>
           </div>
         </header>
-        <span className="flex justify-center px-5 text-3xl font-bold mb-2">
+        <span className="flex justify-center px-5 text-3xl font-bold mb-2 cursor-default">
           Click on the Congress Card to Join
         </span>
 

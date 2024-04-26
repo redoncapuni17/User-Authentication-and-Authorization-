@@ -20,7 +20,6 @@ export default function EventForm({
   const [endTime, setEndTime] = useState("");
   const [contactInfo, setContactInfo] = useState("");
   const [isExistingCongress, setIsExistingCongress] = useState(false);
-
   const [showUpdateForm, setShowUpdateForm] = useState(false);
 
   useEffect(() => {
@@ -80,10 +79,6 @@ export default function EventForm({
 
   const handleUpdateCongress = async (e) => {
     e.preventDefault();
-    if (!adminUid) {
-      console.error("adminUid is undefined");
-      return;
-    }
 
     const updatedCongress = {
       ...editCongress,
@@ -115,12 +110,9 @@ export default function EventForm({
 
   return (
     <div className=" bg-white p-3 sm:border-r border-gray-500">
-      <h2 className="text-lg font-semibold mb-4">Event Form</h2>
-      <form
-        onSubmit={showUpdateForm ? handleUpdateCongress : handleSubmit}
-        className=""
-      >
-        <div className="mb-4">
+      <h2 className="text-lg font-semibold mb-4 cursor-default">Event Form</h2>
+      <form onSubmit={showUpdateForm ? handleUpdateCongress : handleSubmit}>
+        <div className="mb-4 ">
           <label
             htmlFor="name"
             className="block text-gray-700 font-semibold mb-2 text-sm"
@@ -133,8 +125,8 @@ export default function EventForm({
             value={name}
             onChange={(e) => setName(e.target.value)}
             className={`w-full px-3 py-2 border border-gray-300 ${
-              isExistingCongress ? "border border-red-500" : ""
-            } rounded-md focus:outline-none focus:border-indigo-500 text-sm`}
+              isExistingCongress ? "border border-red-500 text-sm" : ""
+            }  rounded-md focus:outline-none focus:border-indigo-500 text-sm `}
             placeholder="Enter name of event"
             required
           />
@@ -152,7 +144,7 @@ export default function EventForm({
             id="address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 text-sm"
+            className={`  w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 text-sm`}
             placeholder="Enter address of event"
             required
           />

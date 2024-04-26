@@ -10,7 +10,7 @@ export default function AdminDashboard({ currentUser }) {
   const [searchInput, setSearchInput] = useState("");
   const [filteredCongressLists, setFilteredCongressLists] = useState([]);
   const [openDropDownMenu, setOpenDropDownMenu] = useState(false);
-  const [editCongress, setEditCongress] = useState(null);
+  const [editCongress, setEditCongress] = useState(false);
 
   // Function to fetch congress data from Firestore
   const fetchCongressData = async () => {
@@ -91,10 +91,14 @@ export default function AdminDashboard({ currentUser }) {
   return (
     <div className="w-full  ">
       <main className="px-5 py-5 ">
-        <header className="bg-gradient-to-r from-gray-600 to-gray-800 shadow-lg rounded-lg p-6 overflow-hidden">
+        <header className="bg-gradient-to-r from-gray-600 to-gray-800 shadow-lg rounded-lg p-6 overflow-hidden ">
           <div className="px-6 py-4 font-mono">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-100 mb-2">
-              Welcome, {currentUser.name}!
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-100 mb-2 cursor-default">
+              Welcome,{" "}
+              <span className="text-red-500 uppercase ">
+                {currentUser.name}
+              </span>
+              !
             </h2>
             <p className="text-sm text-gray-300">
               Here's your personalized dashboard.

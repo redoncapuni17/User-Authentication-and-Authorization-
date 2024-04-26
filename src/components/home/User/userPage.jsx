@@ -59,13 +59,15 @@ export default function UserPage({
                   </svg>
                 )}
               </button>
-              <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
+              <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white cursor-default">
                 Home Page
               </span>
             </div>
             <div className="flex items-center">
               <div className="flex items-center ms-3">
-                <div className="text-white">You are {userData.role}</div>
+                <div className="text-white cursor-default">
+                  You are {userData.role}
+                </div>
               </div>
             </div>
           </div>
@@ -92,7 +94,7 @@ export default function UserPage({
                   className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                 >
                   <svg
-                    className={`w-5 h-5 text-gray-500 transition duration-75 ${
+                    className={`flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 ${
                       showDashboard
                         ? "dark:text-gray-100  "
                         : "dark:text-gray-500 "

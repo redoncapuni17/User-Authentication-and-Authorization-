@@ -2,12 +2,10 @@ import React from "react";
 
 import Login from "./components/auth/login";
 // import Register from "./components/auth/register";
-import Logout from "./components/logout/logout";
-// import Home from "./components/home/home";
+import Home from "./components/home/home";
 import { AuthProvider } from "./contexts/authContext";
 import { useRoutes } from "react-router-dom";
 
-const LazyHome = React.lazy(() => import("./components/home/home"));
 const LazyRegister = React.lazy(() => import("./components/auth/register"));
 
 function App() {
@@ -30,11 +28,7 @@ function App() {
     },
     {
       path: "/home",
-      element: (
-        <React.Suspense fallback="Loading...">
-          <LazyHome />
-        </React.Suspense>
-      ),
+      element: <Home />,
     },
   ];
   let routesElement = useRoutes(routesArray);

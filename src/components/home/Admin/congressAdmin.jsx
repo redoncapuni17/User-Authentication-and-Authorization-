@@ -14,20 +14,20 @@ export default function CongressAdmin({
 
   const toggleDropDown = (index) => {
     setOpenDropDownMenu(openDropDownMenu === index ? null : index);
-    setIsMenuOpen(openDropDownMenu === index);
+    setIsMenuOpen(!isMenuOpen); // Toggle the state of the menu
   };
 
   const handleEdit = (congressId) => {
     handleEditCongress(congressId);
     setOpenDropDownMenu(null);
-    setIsMenuOpen(false);
+    setIsMenuOpen(false); // Close the menu when editing
   };
 
   useEffect(() => {
     function handleClickOutside(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsMenuOpen(false);
         setOpenDropDownMenu(null);
+        setIsMenuOpen(false); // Close the menu when clicking outside
       }
     }
 
@@ -40,31 +40,31 @@ export default function CongressAdmin({
   return (
     <main>
       <div className="border border-gray-100 rounded-md bg-gray-50 font-normal">
-        <ul className="px-2 overflow-scroll no-scrollbar h-96 ">
+        <ul className="px-2 overflow-scroll no-scrollbar h-96 pb-44">
           {congressLists.map((congress, index) => (
             <li
               key={index}
-              className="relative flex  sm:flex-row justify-between  my-5 bg-gradient-to-r from-blue-50 to-blue-200 shadow-lg rounded-lg transition-all"
+              className="relative  flex  sm:flex-row justify-between  my-6 bg-gradient-to-r from-blue-50 to-blue-200 shadow-lg rounded-lg transition-all cursor-default"
             >
-              <div className="h-40 sm:h-auto pt-3 sm:p-0 flex flex-col justify-between items-center sm:flex-row w-full ">
-                <span className="w-full sm:pl-5  sm:text-base text-3xl sm:w-2/6 text-center sm:text-left  font-medium">
+              <div className="h-40 border-l-4  border-r border-green-400 rounded-l-md sm:h-auto pt-2 sm:p-0 flex flex-col justify-between sm:items-center sm:flex-row w-full  ">
+                <span className="w-full sm:pl-5  sm:text-base text-3xl sm:w-2/6 text-left sm:text-left  rounded-sm pl-3  font-medium">
                   {congress.name}
                 </span>
-                <span className="w-full sm:w-2/6 text-center sm:text-left ">
+                <span className="w-full sm:w-2/6 text-left sm:pl-0 pl-5 sm:text-left ">
                   {congress.contactInfo}
                 </span>
-                <span className="w-full sm:w-1/6 text-center sm:text-left">
+                <span className="w-full sm:w-1/6 text-left sm:pl-0 pl-5 sm:text-left">
                   {congress.address}
                 </span>
-                <span className=" w-full sm:w-1/4  text-center sm:text-left ">
-                  From <b>&nbsp;{congress.startTime}&nbsp; </b> to
+                <span className="sm:block flex justify-between w-48 sm:w-1/4  pl-5  sm:pl-0 sm:text-left ">
+                  <b>{congress.startTime}&nbsp; </b>to
                   <b>&nbsp;{congress.endTime} </b>
                 </span>
               </div>
               <div
-                className={`h-10 rounded-full    p-3 cursor-pointer   ${
-                  isMenuOpen ? "bg-blue-400" : ""
-                }`}
+                className={`hover:bg-blue-300 rounded-r-md p-3 flex items-center cursor-pointer  ${
+                  isMenuOpen && openDropDownMenu === index ? "bg-blue-300" : ""
+                }`} // Apply background color when menu is open
                 onClick={() => toggleDropDown(index)}
               >
                 <BsThreeDotsVertical />

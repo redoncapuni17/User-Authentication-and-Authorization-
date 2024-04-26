@@ -8,11 +8,13 @@ export default function CongresUser({ congressData, currentUser }) {
   const [selectedCongress, setSelectedCongress] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [filteredCongressData, setFilteredCongressData] = useState([]);
+  const [alreadyJoinedMessage, setAlreadyJoinedMessage] = useState("");
 
   const handleClickCongress = (congress) => {
     setSelectedCongress(congress);
     setClickCongress(true);
     setJoinCongress(false);
+    setAlreadyJoinedMessage("");
   };
 
   const handleJoinCongress = async () => {
@@ -29,9 +31,8 @@ export default function CongresUser({ congressData, currentUser }) {
           { id: currentUser.uid, name: currentUser.name },
         ],
       });
-      console.log("User added to Congress successfully");
 
-      // Create a new filed joinedCongress on users collection in firebase firestore
+      // Create a new field joinedCongress on users collection in firebase firestore
       const userDocRef = doc(db, "users", currentUser.uid);
       await updateDoc(userDocRef, {
         joinCongress: arrayUnion({
@@ -44,6 +45,10 @@ export default function CongresUser({ congressData, currentUser }) {
         }),
       });
 
+      // // Check if the user has already joined this congress
+      // if (selectedCongress.users.some((user) => user.id === currentUser.uid)) {
+      //   return setAlreadyJoinedMessage(true);
+      // }
       console.log("Joined congress added to user's document successfully");
 
       setJoinCongress(true);
@@ -101,9 +106,9 @@ export default function CongresUser({ congressData, currentUser }) {
           joinCongress ? (
             ``
           ) : (
-            <div className="w-full  md:w-96 h-auto md:h-96 p-5 flex flex-col items-center  border-r-2 border-gray-300">
-              <section className="w-72 flex flex-col  py-7 px-2 bg-gradient-to-r from-blue-100 to-blue-200 mt-5 bg-gray-50 shadow-xl rounded-md">
-                <div className="flex pl-1 mb-2 text-2xl font-bold border-l-4 border-blue-500">
+            <div className="w-full md:w-96 h-auto md:h-96 p-5 flex flex-col items-center border-r-2 border-gray-300">
+              <section className="w-72 flex flex-col py-7 px-2 bg-gradient-to-r from-blue-100 to-blue-200 my-5 bg-gray-50 shadow-xl rounded-md">
+                <div className="flex pl-1 mb-2 text-2xl font-bold border-l-4 border-blue-500 cursor-default">
                   {selectedCongress.name}
                 </div>
                 <div className="flex w-full justify-between px-6 mb-7 text-sm">
@@ -117,20 +122,30 @@ export default function CongresUser({ congressData, currentUser }) {
                 </div>
                 <div className="flex gap-5 pt-5">
                   <div className="flex flex-col border-r-2 border-gray-400 px-3">
-                    <span className="font-bold">Contact Info</span>
+                    <span className="font-bold cursor-default">
+                      Contact Info
+                    </span>
                     <span className="text-sm text-red-500 font-medium">
                       {selectedCongress.contactInfo}
                     </span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-bold">Address</span>
+                    <span className="font-bold cursor-default">Address</span>
                     <span className="text-sm text-slate-500">
                       {selectedCongress.address}
                     </span>
                   </div>
                 </div>
               </section>
-              <div className="flex justify-center gap-4 mt-10">
+
+              {/* Conditionally render the message
+              {alreadyJoinedMessage && (
+                <p className="text-sm text-red-500 ">
+                  "You already joined in this Congress"
+                </p>
+              )} */}
+
+              <div className="flex justify-center gap-4 mt-5">
                 <button
                   onClick={handleJoinCongress}
                   type="button"
@@ -160,7 +175,7 @@ export default function CongresUser({ congressData, currentUser }) {
               className="flex p-3 w-24 h-16 sm:w-28 md:w-40 lg:w-48 sm:h-16 md:h-28 justify-center items-center bg-gradient-to-r from-blue-100 to-blue-200 shadow-lg rounded-md hover:scale-105 transition-all cursor-pointer"
               onClick={() => handleClickCongress(congress)}
             >
-              {congress.name}
+              <span className="text-lg">{congress.name}</span>
             </section>
           ))}
         </div>

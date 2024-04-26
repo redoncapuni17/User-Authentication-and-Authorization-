@@ -4,7 +4,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 
 export default function DropDownMenu({ onEdit, onDelete }) {
   return (
-    <div className="absolute right-0 mt-11 w-48 bg-white border border-gray-300 rounded shadow-lg z-10">
+    <div className="absolute right-0 sm:mt-36 md:mt-10  lg:mt-10  w-48 bg-white border border-gray-300 rounded shadow-lg z-10">
       <div className="py-1">
         <a
           href="#"

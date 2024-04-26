@@ -45,7 +45,6 @@ export default function ListOfCongress({ currentUser }) {
 
       // Get the user document
       const userDocSnapshot = await getDoc(userDocRef);
-
       if (userDocSnapshot.exists()) {
         // Get the current user data
         const userData = userDocSnapshot.data();
@@ -54,16 +53,14 @@ export default function ListOfCongress({ currentUser }) {
         const updatedJoinCongress = userData.joinCongress.filter(
           (c) => c.id !== congress.id
         );
-
         // Update the user document with the modified joinCongress array
         await updateDoc(userDocRef, {
-          joinCongress: updatedJoinCongress,
+          joinCongress:
+            updatedJoinCongress.length > 0 ? updatedJoinCongress : null,
         });
 
         // Update the state to reflect the change
         setJoinedCongress(updatedJoinCongress);
-
-        console.log("Joined congress deleted successfully");
       } else {
         console.log("User document does not exist.");
       }
@@ -87,7 +84,9 @@ export default function ListOfCongress({ currentUser }) {
 
   return (
     <div className="h-screen w-full p-4 ">
-      <h2 className="text-xl font-semibold mb-4">Joined Congress Details </h2>
+      <h2 className="text-2xl font-semibold mb-4 cursor-default ">
+        Joined Congress Details{" "}
+      </h2>
       <div className="flex justify-between p-4">
         <form className="flex items-center w-96">
           <div className="relative w-full">
@@ -144,7 +143,7 @@ export default function ListOfCongress({ currentUser }) {
         <tbody className="bg-white divide-y divide-gray-200">
           {filteredTable.map((congress) => (
             <tr key={congress.id}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 cursor-default">
                 {congress.name}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
