@@ -136,7 +136,7 @@ export default function ListOfCongress({ currentUser }) {
               End Time
             </th>
             <th className=" py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
-              Actions
+              Delete
             </th>
           </tr>
         </thead>

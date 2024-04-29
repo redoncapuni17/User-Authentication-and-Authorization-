@@ -18,6 +18,7 @@ export default function EventForm({
   const [address, setAddress] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [date, setDate] = useState("");
   const [contactInfo, setContactInfo] = useState("");
   const [isExistingCongress, setIsExistingCongress] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
@@ -28,6 +29,7 @@ export default function EventForm({
       setAddress(editCongress.address);
       setStartTime(editCongress.startTime);
       setEndTime(editCongress.endTime);
+      setDate(editCongress.date);
       setContactInfo(editCongress.contactInfo);
       setShowUpdateForm(true);
     }
@@ -41,14 +43,33 @@ export default function EventForm({
       return;
     }
 
+    const today = new Date();
+    const congressDate = new Date(date);
+
+    congressDate.setHours(today.getHours());
+    congressDate.setMinutes(today.getMinutes());
+    congressDate.setSeconds(today.getSeconds());
+    congressDate.setMilliseconds(today.getMilliseconds());
+
+    // Check if the congress date is after or equal to today's date
+    const actionType = congressDate >= today ? "active" : "passive";
+
+    // console.log(today.toLocaleString("en-US", { timeZone: "Europe/Istanbul" }));
+    // console.log(
+    //   congressDate.toLocaleString("en-US", { timeZone: "Europe/Istanbul" })
+    // );
+    // console.log(actionType);
+
     const newCongress = {
       name: name,
       address: address,
       startTime: startTime,
       endTime: endTime,
+      date: date,
       contactInfo: contactInfo,
       adminUid: adminUid,
       users: [],
+      type: actionType,
     };
 
     try {
@@ -71,6 +92,7 @@ export default function EventForm({
       setAddress("");
       setStartTime("");
       setEndTime("");
+      setDate("");
       setContactInfo("");
     } catch (error) {
       console.error("Error adding document: ", error);
@@ -86,6 +108,7 @@ export default function EventForm({
       address: address,
       startTime: startTime,
       endTime: endTime,
+      date: date,
       contactInfo: contactInfo,
       adminUid: adminUid,
     };
@@ -101,6 +124,7 @@ export default function EventForm({
       setAddress("");
       setStartTime("");
       setEndTime("");
+      setDate("");
       setContactInfo("");
       setShowUpdateForm(false);
     } catch (error) {
@@ -112,10 +136,10 @@ export default function EventForm({
     <div className=" bg-white p-3 sm:border-r border-gray-500">
       <h2 className="text-lg font-semibold mb-4 cursor-default">Event Form</h2>
       <form onSubmit={showUpdateForm ? handleUpdateCongress : handleSubmit}>
-        <div className="mb-4 ">
+        <div className="mb-2 ">
           <label
             htmlFor="name"
-            className="block text-gray-700 font-semibold mb-2 text-sm"
+            className="block text-gray-700 font-semibold mb-1 text-sm"
           >
             Name of Event
           </label>
@@ -132,10 +156,10 @@ export default function EventForm({
           />
         </div>
 
-        <div className="mb-4">
+        <div className="mb-2">
           <label
             htmlFor="address"
-            className="block text-gray-700 font-semibold mb-2 text-sm"
+            className="block text-gray-700 font-semibold mb-1 text-sm"
           >
             Address of Event
           </label>
@@ -149,10 +173,10 @@ export default function EventForm({
             required
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-2">
           <label
             htmlFor="time"
-            className="block text-gray-700 font-semibold mb-2 text-sm"
+            className="block text-gray-700 font-semibold mb-1 text-sm"
           >
             Time
           </label>
@@ -175,10 +199,27 @@ export default function EventForm({
             />
           </div>
         </div>
-        <div className="mb-4">
+        <div className="mb-2">
+          <label
+            htmlFor="date"
+            className="block text-gray-700 font-semibold mb-1 text-sm"
+          >
+            Date
+          </label>
+          <input
+            type="date"
+            id="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 text-sm"
+            placeholder="Enter date of event"
+            required
+          />
+        </div>
+        <div className="mb-2">
           <label
             htmlFor="contactInfo"
-            className="block text-gray-700 font-semibold mb-2 text-sm"
+            className="block text-gray-700 font-semibold mb-1 text-sm"
           >
             Contact Info (Phone number or E-mail)
           </label>
@@ -200,7 +241,7 @@ export default function EventForm({
 
         <button
           type="submit"
-          className=" w-full mt-3 bg-indigo-500 text-white font-mono px-4 py-2 rounded-md hover:bg-indigo-600 transition duration-300 text-sm"
+          className=" w-full mt-2 bg-indigo-500 text-white font-mono px-4 py-2 rounded-md hover:bg-indigo-600 transition duration-300 text-sm"
         >
           {showUpdateForm ? "Update Congress" : "Create Congress"}
         </button>

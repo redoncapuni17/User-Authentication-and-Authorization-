@@ -138,13 +138,6 @@ export default function CongresUser({ congressData, currentUser }) {
                 </div>
               </section>
 
-              {/* Conditionally render the message
-              {alreadyJoinedMessage && (
-                <p className="text-sm text-red-500 ">
-                  "You already joined in this Congress"
-                </p>
-              )} */}
-
               <div className="flex justify-center gap-4 mt-5">
                 <button
                   onClick={handleJoinCongress}

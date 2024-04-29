@@ -2,8 +2,8 @@ import React, { useState, useEffect, Suspense, lazy } from "react";
 
 import { db } from "../../firebase/firebase";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import EventForm from "./eventForm";
 const LazyCongressAdmin = lazy(() => import("./congressAdmin"));
-const LazyEventForm = lazy(() => import("./eventForm"));
 
 export default function AdminDashboard({ currentUser }) {
   const [congressLists, setCongressLists] = useState([]);
@@ -34,14 +34,16 @@ export default function AdminDashboard({ currentUser }) {
   // Delete Congress From Firebase Firestore
   const handleDeleteCongress = async (congressId) => {
     try {
+      if (!congressId) {
+        console.error("Invalid congressId:", congressId);
+        return;
+      }
       setCongressLists((prevCongressLists) =>
         prevCongressLists.filter((congress) => congress.id !== congressId)
       );
       const deletedCongressRef = doc(db, "congress", congressId);
       await deleteDoc(deletedCongressRef);
-
       setOpenDropDownMenu(false);
-
       console.log("Congress deleted successfully");
     } catch (error) {
       console.error("Error removing congress: ", error);
@@ -106,15 +108,13 @@ export default function AdminDashboard({ currentUser }) {
           </div>
         </header>
         <section className="flex flex-col md:flex-row ">
-          <section className="w-full  sm:w-5/12 py-3 ">
-            <Suspense fallback={<p>Loading...</p>}>
-              <LazyEventForm
-                addCongress={addCongress}
-                adminUid={currentUser}
-                editCongress={editCongress}
-                updateCongressList={updateCongressList} // Pass the function to update congressLists
-              />
-            </Suspense>
+          <section className="w-full  sm:w-4/12 py-3 ">
+            <EventForm
+              addCongress={addCongress}
+              adminUid={currentUser}
+              editCongress={editCongress}
+              updateCongressList={updateCongressList} // Pass the function to update congressLists
+            />
           </section>
           <section className="w-full md:w-3/4 p-3">
             <div className="m-3">

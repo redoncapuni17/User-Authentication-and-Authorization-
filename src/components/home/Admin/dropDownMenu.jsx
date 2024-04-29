@@ -1,6 +1,6 @@
 // DropDownMenu.jsx
 import React from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaList, FaTrash } from "react-icons/fa";
 
 export default function DropDownMenu({ onEdit, onDelete }) {
   return (
@@ -9,10 +9,17 @@ export default function DropDownMenu({ onEdit, onDelete }) {
         <a
           href="#"
           onClick={onEdit}
-          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-500"
         >
           <FaEdit className="mr-2" /> Edit
         </a>
+        {/* <a
+          href="#"
+          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-500"
+        >
+          <FaList className="mr-2 " />
+          Show join users
+        </a> */}
         <a
           href="#"
           onClick={onDelete}
