@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, lazy } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import DropDownMenu from "./dropDownMenu.jsx";
+import ListOfJoinUsers from "./listofJoinUsers.jsx";
 
 export default function CongressAdmin({
   congressLists,
@@ -10,6 +11,8 @@ export default function CongressAdmin({
   handleEditCongress,
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const menuRef = useRef();
 
   const toggleDropDown = (index) => {
@@ -37,6 +40,14 @@ export default function CongressAdmin({
     };
   }, [menuRef]);
 
+  const handleShowModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <main>
       <div className="border border-gray-100 rounded-md bg-gray-50 font-normal">
@@ -49,8 +60,8 @@ export default function CongressAdmin({
               <div
                 className={`border-l-4 ${
                   congress.type === "active"
-                    ? " border-r border-green-400"
-                    : " border-r border-red-500 line-through  "
+                    ? "border-x border-green-400 "
+                    : " border-x border-red-500 line-through  "
                 } rounded-l-md sm:h-auto pt-2 sm:p-0 flex flex-col justify-between sm:items-center sm:flex-row w-full  `}
               >
                 <span className="w-full sm:pl-5   sm:text-base text-3xl sm:w-2/6 text-left sm:text-left  rounded-sm pl-3  font-medium">
@@ -87,7 +98,18 @@ export default function CongressAdmin({
                     onDelete={() => {
                       handleDeleteCongress(congress.id);
                     }}
+                    handleShowJoinUsers={() => {
+                      handleShowModal();
+                    }}
                   />
+                  {isModalOpen && (
+                    <ListOfJoinUsers
+                      onClose={handleCloseModal}
+                      congressLists={congressLists}
+                      congressName={congress.name}
+                      congress={congress}
+                    />
+                  )}
                 </div>
               )}
             </li>

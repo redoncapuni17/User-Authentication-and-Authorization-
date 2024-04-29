@@ -14,7 +14,6 @@ export default function CongresUser({ congressData, currentUser }) {
     setSelectedCongress(congress);
     setClickCongress(true);
     setJoinCongress(false);
-    setAlreadyJoinedMessage("");
   };
 
   const handleJoinCongress = async () => {
@@ -25,10 +24,29 @@ export default function CongresUser({ congressData, currentUser }) {
       }
 
       const congressDocRef = doc(db, "congress", selectedCongress.id);
+
+      // Check if the user is already in the list of users
+      const isUserAlreadyJoined = selectedCongress.users.some(
+        (user) => user.id === currentUser.uid
+      );
+      if (isUserAlreadyJoined) {
+        setAlreadyJoinedMessage("You have already joined this congress.");
+        setTimeout(() => {
+          setAlreadyJoinedMessage("");
+        }, 1500);
+        // console.log("You have already joined this congress");
+        return;
+      }
+
+      // Add the user to the list of users associated with the congress
       await updateDoc(congressDocRef, {
         users: [
           ...selectedCongress.users,
-          { id: currentUser.uid, name: currentUser.name },
+          {
+            id: currentUser.uid,
+            name: currentUser.name,
+            email: currentUser.email,
+          },
         ],
       });
 
@@ -42,13 +60,10 @@ export default function CongresUser({ congressData, currentUser }) {
           contactInfo: selectedCongress.contactInfo,
           startTime: selectedCongress.startTime,
           endTime: selectedCongress.endTime,
+          date: selectedCongress.date,
         }),
       });
 
-      // // Check if the user has already joined this congress
-      // if (selectedCongress.users.some((user) => user.id === currentUser.uid)) {
-      //   return setAlreadyJoinedMessage(true);
-      // }
       console.log("Joined congress added to user's document successfully");
 
       setJoinCongress(true);
@@ -107,11 +122,23 @@ export default function CongresUser({ congressData, currentUser }) {
             ``
           ) : (
             <div className="w-full md:w-96 h-auto md:h-96 p-5 flex flex-col items-center border-r-2 border-gray-300">
-              <section className="w-72 flex flex-col py-7 px-2 bg-gradient-to-r from-blue-100 to-blue-200 my-5 bg-gray-50 shadow-xl rounded-md">
-                <div className="flex pl-1 mb-2 text-2xl font-bold border-l-4 border-blue-500 cursor-default">
+              <section
+                className={`w-72 flex flex-col ${
+                  selectedCongress.type === "passive"
+                    ? "border border-red-300 bg-gradient-to-r from-red-100 to-red-200 line-through"
+                    : " border border-blue-300"
+                } py-7 px-2 bg-gradient-to-r from-blue-100 to-blue-200 my-5 bg-gray-50 shadow-xl rounded-md`}
+              >
+                <div
+                  className={`flex pl-1 mb-2 ${
+                    selectedCongress.type === "passive"
+                      ? " border-l-4 border-red-500"
+                      : " border-l-4 border-blue-500"
+                  } text-2xl font-bold cursor-default`}
+                >
                   {selectedCongress.name}
                 </div>
-                <div className="flex w-full justify-between px-6 mb-7 text-sm">
+                <div className="flex w-full justify-between px-6 mb-4 text-sm">
                   Start &nbsp;
                   {selectedCongress.startTime}
                   <p className="text-slate-400 border-x-2 border-gray-400 px-4">
@@ -120,7 +147,19 @@ export default function CongresUser({ congressData, currentUser }) {
                   End &nbsp;
                   {selectedCongress.endTime}
                 </div>
-                <div className="flex gap-5 pt-5">
+                <div className="flex justify-center items-center gap-3">
+                  <span className="font-bold cursor-default">Date</span>
+                  <span
+                    className={`text-sm ${
+                      selectedCongress.type === "passive"
+                        ? "text-red-500"
+                        : "text-blue-500"
+                    } font-medium`}
+                  >
+                    {selectedCongress.date}
+                  </span>
+                </div>
+                <div className="flex gap-5 pt-2">
                   <div className="flex flex-col border-r-2 border-gray-400 px-3">
                     <span className="font-bold cursor-default">
                       Contact Info
@@ -137,6 +176,9 @@ export default function CongresUser({ congressData, currentUser }) {
                   </div>
                 </div>
               </section>
+              {alreadyJoinedMessage && (
+                <p className="text-sm text-red-500">{alreadyJoinedMessage}</p>
+              )}
 
               <div className="flex justify-center gap-4 mt-5">
                 <button
@@ -165,7 +207,11 @@ export default function CongresUser({ congressData, currentUser }) {
           {filteredCongressData.map((congress) => (
             <section
               key={congress.id}
-              className="flex p-3 w-24 h-16 sm:w-28 md:w-40 lg:w-48 sm:h-16 md:h-28 justify-center items-center bg-gradient-to-r from-blue-100 to-blue-200 shadow-lg rounded-md hover:scale-105 transition-all cursor-pointer"
+              className={`flex p-3 w-24 h-16 sm:w-28 md:w-40 lg:w-48 sm:h-16 md:h-28 justify-center ${
+                congress.type === "passive"
+                  ? "border border-red-300 bg-gradient-to-r from-red-100 to-red-200 line-through"
+                  : "border border-blue-300"
+              } items-center  bg-gradient-to-r from-blue-100 to-blue-200 shadow-lg rounded-md hover:scale-105 transition-all cursor-pointer`}
               onClick={() => handleClickCongress(congress)}
             >
               <span className="text-lg">{congress.name}</span>

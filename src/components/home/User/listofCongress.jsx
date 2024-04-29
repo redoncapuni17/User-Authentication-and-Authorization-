@@ -8,37 +8,30 @@ export default function ListOfCongress({ currentUser }) {
   const [filteredTable, setFilteredTable] = useState([]);
   const [joinedCongress, setJoinedCongress] = useState([]);
 
-  useEffect(() => {
-    const fetchJoinedCongress = async () => {
-      try {
-        if (!currentUser || !currentUser.uid) {
-          console.error("No user or user ID available.");
-          return;
-        }
-
-        const userDocRef = doc(db, "users", currentUser.uid);
-        const userDocSnapshot = await getDoc(userDocRef);
-
-        if (userDocSnapshot.exists()) {
-          const userData = userDocSnapshot.data();
-          if (userData.joinCongress) {
-            setJoinedCongress(userData.joinCongress);
-          } else {
-            console.log("No joined congress data found for the user.");
-          }
-        } else {
-          console.log("User document does not exist.");
-        }
-      } catch (error) {
-        console.error("Error fetching joined congress: ", error);
+  const fetchJoinedCongress = async () => {
+    try {
+      if (!currentUser || !currentUser.uid) {
+        console.error("No user or user ID available.");
+        return;
       }
-    };
 
-    if (currentUser) {
-      fetchJoinedCongress();
+      const userDocRef = doc(db, "users", currentUser.uid);
+      const userDocSnapshot = await getDoc(userDocRef);
+
+      if (userDocSnapshot.exists()) {
+        const userData = userDocSnapshot.data();
+        if (userData.joinCongress) {
+          setJoinedCongress(userData.joinCongress);
+        } else {
+          console.log("No joined congress data found for the user.");
+        }
+      } else {
+        console.log("User document does not exist.");
+      }
+    } catch (error) {
+      console.error("Error fetching joined congress: ", error);
     }
-  }, [currentUser]);
-
+  };
   const handleDeleteCongress = async (congress) => {
     try {
       const userDocRef = doc(db, "users", currentUser.uid);
@@ -51,7 +44,7 @@ export default function ListOfCongress({ currentUser }) {
 
         // Remove the selected congress from the joinCongress array
         const updatedJoinCongress = userData.joinCongress.filter(
-          (c) => c.id !== congress.id
+          (congres) => congres.id !== congress.id
         );
         // Update the user document with the modified joinCongress array
         await updateDoc(userDocRef, {
@@ -61,6 +54,20 @@ export default function ListOfCongress({ currentUser }) {
 
         // Update the state to reflect the change
         setJoinedCongress(updatedJoinCongress);
+
+        // Remove the user from the users list associated with the congress
+        const congressDocRef = doc(db, "congress", congress.id);
+        const congressDocSnapshot = await getDoc(congressDocRef);
+        if (congressDocSnapshot.exists()) {
+          const congressData = congressDocSnapshot.data();
+          const updatedUsers = congressData.users.filter(
+            (user) => user.id !== currentUser.uid
+          );
+          await updateDoc(congressDocRef, { users: updatedUsers });
+          console.log("User removed from congress successfully");
+        } else {
+          console.log("Congress document does not exist.");
+        }
       } else {
         console.log("User document does not exist.");
       }
@@ -68,6 +75,12 @@ export default function ListOfCongress({ currentUser }) {
       console.error("Error deleting congress: ", error);
     }
   };
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchJoinedCongress();
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     // Filter by search input
@@ -127,6 +140,9 @@ export default function ListOfCongress({ currentUser }) {
               Address
             </th>
             <th className="px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
+              Date
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
               Contact Info
             </th>
             <th className="px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
@@ -148,6 +164,9 @@ export default function ListOfCongress({ currentUser }) {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {congress.address}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {congress.date}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {congress.contactInfo}
