@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../contexts/authContext";
 import { db } from "../../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { FaList } from "react-icons/fa6";
 
 function ListOfJoinUsers({ onClose, congressName, congress }) {
   const { currentUser } = useAuth();
@@ -68,19 +69,20 @@ function ListOfJoinUsers({ onClose, congressName, congress }) {
           <span
             className={`${
               congress.type === "passive"
-                ? "text-red-500 decoration-gray-800 line-through "
-                : "text-green-500"
+                ? "text-red-500 decoration-gray-800 line-through border-l-4 border-red-500 pl-2 "
+                : "text-green-500 border-l-4 border-green-500 pl-2"
             } `}
           >
             {congressName}
           </span>{" "}
           list
         </h1>
-        <div className="flex justify-end  mb-2 ">
+        <div className="flex justify-end   mb-2 ">
           <button
-            className="text-sm text-orange-500 bg-orange-100 px-3 rounded"
+            className="flex items-center gap-1 text-sm text-orange-500 bg-orange-100 px-3 py-1 rounded hover:bg-orange-200 duration-200 shadow-sm"
             onClick={downloadUsers}
           >
+            <FaList />
             Download
           </button>
         </div>
@@ -122,7 +124,7 @@ function ListOfJoinUsers({ onClose, congressName, congress }) {
 
         <div className="mt-4 flex justify-end">
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
+            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-1 px-4 rounded duration-300 shadow-lg"
             onClick={onClose}
           >
             Close

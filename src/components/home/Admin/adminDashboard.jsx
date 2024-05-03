@@ -1,7 +1,13 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
 
 import { db } from "../../firebase/firebase";
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import EventForm from "./eventForm";
 const LazyCongressAdmin = lazy(() => import("./congressAdmin"));
 
@@ -11,6 +17,7 @@ export default function AdminDashboard({ currentUser }) {
   const [filteredCongressLists, setFilteredCongressLists] = useState([]);
   const [openDropDownMenu, setOpenDropDownMenu] = useState(false);
   const [editCongress, setEditCongress] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Function to fetch congress data from Firestore
   const fetchCongressData = async () => {
@@ -22,13 +29,34 @@ export default function AdminDashboard({ currentUser }) {
         ...doc.data(),
       }));
 
+      // Check if the congress date and time is after or equal to today's date and time
+      const currentTime = new Date();
+      for (const congress of congressData) {
+        const congressRef = doc(db, "congress", congress.id);
+
+        const endTimeDate = new Date(`${congress.date}, ${congress.endTime}`);
+
+        if (endTimeDate > currentTime) {
+          await updateDoc(congressRef, {
+            type: "active",
+          });
+        } else {
+          await updateDoc(congressRef, {
+            type: "passive",
+          });
+        }
+      }
+
       setCongressLists(congressData);
     } catch (error) {
       console.error("Error fetching congress data: ", error);
     }
   };
+
+  // Update the loading state when data fetching and updating are complete
   useEffect(() => {
     fetchCongressData();
+    setIsLoading(false);
   }, []);
 
   // Delete Congress From Firebase Firestore
@@ -145,16 +173,20 @@ export default function AdminDashboard({ currentUser }) {
                 </div>
               </form>
             </div>
-            <Suspense fallback={<p>Loading Congress...</p>}>
-              <LazyCongressAdmin
-                congressLists={filteredCongressLists}
-                handleDeleteCongress={handleDeleteCongress}
-                openDropDownMenu={openDropDownMenu}
-                setOpenDropDownMenu={setOpenDropDownMenu}
-                handleEditCongress={handleEditCongress}
-                updatedCongressLists={congressLists} // Pass updated congressLists
-              />
-            </Suspense>
+            {isLoading ? (
+              <p>Loading Congress...</p>
+            ) : (
+              <Suspense fallback={<p>Loading Congress...</p>}>
+                <LazyCongressAdmin
+                  congressLists={filteredCongressLists}
+                  handleDeleteCongress={handleDeleteCongress}
+                  openDropDownMenu={openDropDownMenu}
+                  setOpenDropDownMenu={setOpenDropDownMenu}
+                  handleEditCongress={handleEditCongress}
+                  updatedCongressLists={congressLists} // Pass updated congressLists
+                />
+              </Suspense>
+            )}
           </section>
         </section>
       </main>

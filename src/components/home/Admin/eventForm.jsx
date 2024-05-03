@@ -34,31 +34,14 @@ export default function EventForm({
       setShowUpdateForm(true);
     }
   }, [editCongress]);
+  const currentTime = new Date();
+  const congressEndTime = new Date(`${date}, ${endTime}`);
+
+  // Check if the congress date is after or equal to today's date
+  const actionType = congressEndTime >= currentTime ? "active" : "passive";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!adminUid) {
-      console.error("adminUid is undefined");
-      return;
-    }
-
-    const today = new Date();
-    const congressDate = new Date(date);
-
-    congressDate.setHours(today.getHours());
-    congressDate.setMinutes(today.getMinutes());
-    congressDate.setSeconds(today.getSeconds());
-    congressDate.setMilliseconds(today.getMilliseconds());
-
-    // Check if the congress date is after or equal to today's date
-    const actionType = congressDate >= today ? "active" : "passive";
-
-    // console.log(today.toLocaleString("en-US", { timeZone: "Europe/Istanbul" }));
-    // console.log(
-    //   congressDate.toLocaleString("en-US", { timeZone: "Europe/Istanbul" })
-    // );
-    // console.log(actionType);
 
     const newCongress = {
       name: name,
@@ -81,10 +64,11 @@ export default function EventForm({
 
       if (existingCongress) {
         setIsExistingCongress(true);
-        return;
+        console.log("New Congress Added");
       }
 
       await addDoc(congressRef, newCongress);
+
       setIsExistingCongress(false);
       addCongress(newCongress);
 
@@ -95,7 +79,7 @@ export default function EventForm({
       setDate("");
       setContactInfo("");
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.error("Error processing document: ", error);
     }
   };
 
@@ -111,6 +95,7 @@ export default function EventForm({
       date: date,
       contactInfo: contactInfo,
       adminUid: adminUid,
+      type: actionType,
     };
 
     try {
