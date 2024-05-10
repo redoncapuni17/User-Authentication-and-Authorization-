@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../../firebase/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { fetchAllUsersFromFirestore } from "../../firebase/firestore";
 
 export default function ListOfUser({ currentUser }) {
   const [allUsers, setAllUsers] = useState([]);
@@ -11,14 +10,8 @@ export default function ListOfUser({ currentUser }) {
   useEffect(() => {
     const fetchAllUsers = async () => {
       try {
-        const usersRef = collection(db, "users");
-        const usersSnapshot = await getDocs(usersRef);
-        const usersList = [];
-        usersSnapshot.forEach((doc) => {
-          usersList.push({ uid: doc.id, ...doc.data() });
-        });
-
-        setAllUsers(usersList);
+        const users = await fetchAllUsersFromFirestore();
+        setAllUsers(users);
       } catch (error) {
         console.log("Error getting users: ", error);
       }

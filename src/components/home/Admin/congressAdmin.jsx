@@ -50,7 +50,7 @@ export default function CongressAdmin({
 
   return (
     <main>
-      <div className="border border-gray-100 rounded-md bg-gray-50 font-normal">
+      <div className="border border-gray-400 rounded-md bg-gray-50 font-normal">
         <ul className="px-2 overflow-scroll no-scrollbar h-96 pb-44">
           {congressLists.map((congress, index) => (
             <li
@@ -61,7 +61,7 @@ export default function CongressAdmin({
                 className={`border-l-4 ${
                   congress.type === "active"
                     ? "border-x border-green-400 "
-                    : " border-x border-red-500 line-through  "
+                    : " border-x border-red-500 line-through "
                 } rounded-l-md sm:h-auto pt-2 sm:p-0 flex flex-col justify-between sm:items-center sm:flex-row w-full  `}
               >
                 <span className="w-full sm:pl-5   sm:text-base text-3xl sm:w-2/6 text-left sm:text-left  rounded-sm pl-3  font-medium">

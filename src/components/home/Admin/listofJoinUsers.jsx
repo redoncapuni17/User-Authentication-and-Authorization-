@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../contexts/authContext";
-import { db } from "../../firebase/firebase";
-import { doc, getDoc } from "firebase/firestore";
-import { FaList } from "react-icons/fa6";
+
+import { GoDownload } from "react-icons/go";
+import { fetchAllJoinUsersFromFirestore } from "../../firebase/firestore";
 
 function ListOfJoinUsers({ onClose, congressName, congress }) {
   const { currentUser } = useAuth();
@@ -17,19 +17,13 @@ function ListOfJoinUsers({ onClose, congressName, congress }) {
           return;
         }
 
-        const userDocRef = doc(db, "congress", congress.id);
-        const userDocSnapshot = await getDoc(userDocRef);
+        const users = await fetchAllJoinUsersFromFirestore(congress.id); // Call fetchAllJoinUsers with the congress ID
 
-        if (userDocSnapshot.exists()) {
-          const userData = userDocSnapshot.data();
-          if (userData.users) {
-            setAllJoinUsers(userData.users);
-            setAnimation(true); // Open modal when data is fetched
-          } else {
-            console.log("No joined User data found for this Congress.");
-          }
+        if (users) {
+          setAllJoinUsers(users);
+          setAnimation(true);
         } else {
-          console.log("User document does not exist.");
+          console.log("No joined User data found for this Congress.");
         }
       } catch (error) {
         console.error("Error fetching joined Users: ", error);
@@ -82,8 +76,8 @@ function ListOfJoinUsers({ onClose, congressName, congress }) {
             className="flex items-center gap-1 text-sm text-orange-500 bg-orange-100 px-3 py-1 rounded hover:bg-orange-200 duration-200 shadow-sm"
             onClick={downloadUsers}
           >
-            <FaList />
             Download
+            <GoDownload />
           </button>
         </div>
         <table className="min-w-full divide-y divide-gray-200">

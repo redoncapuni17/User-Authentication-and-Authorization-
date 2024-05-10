@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../../firebase/firebase";
 import {
-  collection,
-  addDoc,
-  doc,
-  updateDoc,
-  getDocs,
-} from "firebase/firestore";
+  addCongressToFirestore,
+  searchCongressExisting,
+  updatedCongressToFirestore,
+} from "../../firebase/firestore";
 
 export default function EventForm({
   addCongress,
@@ -56,28 +53,27 @@ export default function EventForm({
     };
 
     try {
-      const congressRef = collection(db, "congress");
-      const querySnapshot = await getDocs(congressRef);
-      const existingCongress = querySnapshot.docs.find(
-        (doc) => doc.data().name === name
-      );
-
+      const existingCongress = await searchCongressExisting(name);
       if (existingCongress) {
         setIsExistingCongress(true);
-        console.log("New Congress Added");
+        setTimeout(() => {
+          setIsExistingCongress(false);
+        }, 1500);
+      } else {
+        const addCongressSuccessfully = await addCongressToFirestore(
+          newCongress
+        );
+        if (addCongressSuccessfully) {
+          addCongress(newCongress);
+          setName("");
+          setAddress("");
+          setStartTime("");
+          setEndTime("");
+          setDate("");
+          setContactInfo("");
+        }
+        setIsExistingCongress(false);
       }
-
-      await addDoc(congressRef, newCongress);
-
-      setIsExistingCongress(false);
-      addCongress(newCongress);
-
-      setName("");
-      setAddress("");
-      setStartTime("");
-      setEndTime("");
-      setDate("");
-      setContactInfo("");
     } catch (error) {
       console.error("Error processing document: ", error);
     }
@@ -99,21 +95,22 @@ export default function EventForm({
     };
 
     try {
-      const updatedRef = doc(db, "congress", editCongress.id);
-      await updateDoc(updatedRef, updatedCongress);
-      console.log("Congress Updated");
-
-      updateCongressList(updatedCongress);
-
-      setName("");
-      setAddress("");
-      setStartTime("");
-      setEndTime("");
-      setDate("");
-      setContactInfo("");
-      setShowUpdateForm(false);
+      const updateCongressSuccessfully = await updatedCongressToFirestore(
+        updatedCongress,
+        editCongress.id
+      );
+      if (updateCongressSuccessfully) {
+        updateCongressList(updatedCongress);
+        setName("");
+        setAddress("");
+        setStartTime("");
+        setEndTime("");
+        setDate("");
+        setContactInfo("");
+        setShowUpdateForm(false);
+      }
     } catch (error) {
-      console.error("Error updating congress: ", error);
+      console.error("Error processing document: ", error);
     }
   };
 

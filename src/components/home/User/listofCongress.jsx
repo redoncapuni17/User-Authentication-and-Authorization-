@@ -1,7 +1,9 @@
 import { FaTrash } from "react-icons/fa";
 import React, { useEffect, useState } from "react";
-import { db } from "../../firebase/firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  fetchJoinedCongressFromFirestore,
+  handleDeleteCongressFromUserToFirestore,
+} from "../../firebase/firestore";
 
 export default function ListOfCongress({ currentUser }) {
   const [searchInput, setSearchInput] = useState("");
@@ -15,64 +17,13 @@ export default function ListOfCongress({ currentUser }) {
         return;
       }
 
-      const userDocRef = doc(db, "users", currentUser.uid);
-      const userDocSnapshot = await getDoc(userDocRef);
+      const joinedCongressData = await fetchJoinedCongressFromFirestore(
+        currentUser
+      );
 
-      if (userDocSnapshot.exists()) {
-        const userData = userDocSnapshot.data();
-        if (userData.joinCongress) {
-          setJoinedCongress(userData.joinCongress);
-        } else {
-          console.log("No joined congress data found for the user.");
-        }
-      } else {
-        console.log("User document does not exist.");
-      }
+      setJoinedCongress(joinedCongressData);
     } catch (error) {
       console.error("Error fetching joined congress: ", error);
-    }
-  };
-  const handleDeleteCongress = async (congress) => {
-    try {
-      const userDocRef = doc(db, "users", currentUser.uid);
-
-      // Get the user document
-      const userDocSnapshot = await getDoc(userDocRef);
-      if (userDocSnapshot.exists()) {
-        // Get the current user data
-        const userData = userDocSnapshot.data();
-
-        // Remove the selected congress from the joinCongress array
-        const updatedJoinCongress = userData.joinCongress.filter(
-          (congres) => congres.id !== congress.id
-        );
-        // Update the user document with the modified joinCongress array
-        await updateDoc(userDocRef, {
-          joinCongress:
-            updatedJoinCongress.length > 0 ? updatedJoinCongress : null,
-        });
-
-        // Update the state to reflect the change
-        setJoinedCongress(updatedJoinCongress);
-
-        // Remove the user from the users list associated with the congress
-        const congressDocRef = doc(db, "congress", congress.id);
-        const congressDocSnapshot = await getDoc(congressDocRef);
-        if (congressDocSnapshot.exists()) {
-          const congressData = congressDocSnapshot.data();
-          const updatedUsers = congressData.users.filter(
-            (user) => user.id !== currentUser.uid
-          );
-          await updateDoc(congressDocRef, { users: updatedUsers });
-          console.log("User removed from congress successfully");
-        } else {
-          console.log("Congress document does not exist.");
-        }
-      } else {
-        console.log("User document does not exist.");
-      }
-    } catch (error) {
-      console.error("Error deleting congress: ", error);
     }
   };
 
@@ -82,13 +33,29 @@ export default function ListOfCongress({ currentUser }) {
     }
   }, [currentUser]);
 
+  const handleDeleteCongressFromUser = async (congress) => {
+    try {
+      const updatedJoinedCongress =
+        await handleDeleteCongressFromUserToFirestore(currentUser, congress);
+      if (updatedJoinedCongress) {
+        // Update the joinedCongress state with the updated data
+        setJoinedCongress((prevCongress) =>
+          prevCongress.filter((c) => c.id !== congress.id)
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting congress: ", error);
+    }
+  };
+
   useEffect(() => {
     // Filter by search input
-    const filteredData = joinedCongress.filter((congress) =>
-      congress.name.toLowerCase().includes(searchInput.toLowerCase())
-    );
-
-    setFilteredTable(filteredData);
+    if (joinedCongress && joinedCongress.length > 0) {
+      const filteredData = joinedCongress.filter((congress) =>
+        congress.name.toLowerCase().includes(searchInput.toLowerCase())
+      );
+      setFilteredTable(filteredData);
+    }
   }, [searchInput, joinedCongress]);
 
   const handleFilteredInput = (e) => {
@@ -157,34 +124,45 @@ export default function ListOfCongress({ currentUser }) {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {filteredTable.map((congress) => (
-            <tr key={congress.id}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 cursor-default">
-                {congress.name}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {congress.address}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {congress.date}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {congress.contactInfo}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {congress.startTime}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {congress.endTime}
-              </td>
-              <td>
-                <FaTrash
-                  className="mr-2 text-red-500 cursor-pointer hover:text-red-400"
-                  onClick={() => handleDeleteCongress(congress)}
-                />
+          {filteredTable.length === 0 ? (
+            <tr>
+              <td
+                colSpan="7"
+                className="px-6 py-4 text-xl text-center text-gray-500"
+              >
+                No joined congress data found for the user.
               </td>
             </tr>
-          ))}
+          ) : (
+            filteredTable.map((congress) => (
+              <tr key={congress.id}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 cursor-default">
+                  {congress.name}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {congress.address}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {congress.date}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {congress.contactInfo}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {congress.startTime}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {congress.endTime}
+                </td>
+                <td>
+                  <FaTrash
+                    className="mr-2 text-red-500 cursor-pointer hover:text-red-400"
+                    onClick={() => handleDeleteCongressFromUser(congress)}
+                  />
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>

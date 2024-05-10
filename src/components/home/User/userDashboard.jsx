@@ -1,6 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from "react";
-import { db } from "../../firebase/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { fetchCongressDataToFirestore } from "../../firebase/firestore";
 const LazyCongressUser = lazy(() => import("./congresUser"));
 
 export default function UserDashboard({ currentUser }) {
@@ -9,12 +8,8 @@ export default function UserDashboard({ currentUser }) {
   // Function to fetch congress data from Firestore
   const fetchCongressData = async () => {
     try {
-      const congressCollection = collection(db, "congress");
-      const congressSnapshot = await getDocs(congressCollection);
-      const congressData = congressSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const congressData = await fetchCongressDataToFirestore();
+
       setCongressLists(congressData);
     } catch (error) {
       console.error("Error fetching congress data: ", error);

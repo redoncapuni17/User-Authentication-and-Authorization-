@@ -5,6 +5,8 @@ import Login from "./components/auth/login";
 import Home from "./components/home/home";
 import { AuthProvider } from "./contexts/authContext";
 import { useRoutes } from "react-router-dom";
+import AdminDashboard from "./components/home/Admin/adminDashboard";
+import ListOfUser from "./components/home/Admin/listofUsers";
 
 const LazyRegister = React.lazy(() => import("./components/auth/register"));
 
@@ -29,6 +31,17 @@ function App() {
     {
       path: "/home",
       element: <Home />,
+      children: [
+        {
+          path: "dashboard",
+          element: <AdminDashboard />,
+          index: false,
+        },
+        {
+          path: "users",
+          element: <ListOfUser />,
+        },
+      ],
     },
   ];
   let routesElement = useRoutes(routesArray);

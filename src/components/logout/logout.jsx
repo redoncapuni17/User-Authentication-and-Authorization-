@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/authContext/index";
 import { doSignOut } from "../firebase/auth";
+import { TbLogout2 } from "react-icons/tb";
 
 function Logout() {
   const navigate = useNavigate();
@@ -15,17 +16,12 @@ function Logout() {
               navigate("/login");
             });
           }}
-          className="flex gap-2  items-center"
+          className="flex items-center justify-between gap-3"
         >
-          <svg
-            className="w-5 h-5"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
-          </svg>
+          <TbLogout2
+            className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 
+                 group-hover:text-gray-900 dark:group-hover:text-white"
+          />
           <span>Logout</span>
         </button>
       ) : (

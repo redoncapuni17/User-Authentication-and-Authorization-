@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { db } from "../../firebase/firebase";
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { handleJoinCongresstoFirestore } from "../../firebase/firestore";
 
-export default function CongresUser({ congressData, currentUser }) {
+function CongresUser({ congressData, currentUser }) {
   const [clickCongress, setClickCongress] = useState(false);
   const [joinCongress, setJoinCongress] = useState(false);
   const [selectedCongress, setSelectedCongress] = useState(null);
@@ -16,6 +15,7 @@ export default function CongresUser({ congressData, currentUser }) {
     setJoinCongress(false);
   };
 
+  // Function to join user in congress in Firestore
   const handleJoinCongress = async () => {
     try {
       if (!currentUser) {
@@ -23,48 +23,18 @@ export default function CongresUser({ congressData, currentUser }) {
         return;
       }
 
-      const congressDocRef = doc(db, "congress", selectedCongress.id);
-
-      // Check if the user is already in the list of users
-      const isUserAlreadyJoined = selectedCongress.users.some(
-        (user) => user.id === currentUser.uid
+      const handlejoinCongress = await handleJoinCongresstoFirestore(
+        currentUser,
+        selectedCongress
       );
-      if (isUserAlreadyJoined) {
+
+      if (handlejoinCongress) {
         setAlreadyJoinedMessage("You have already joined this congress.");
         setTimeout(() => {
           setAlreadyJoinedMessage("");
         }, 1500);
-        // console.log("You have already joined this congress");
         return;
       }
-
-      // Add the user to the list of users associated with the congress
-      await updateDoc(congressDocRef, {
-        users: [
-          ...selectedCongress.users,
-          {
-            id: currentUser.uid,
-            name: currentUser.name,
-            email: currentUser.email,
-          },
-        ],
-      });
-
-      // Create a new field joinedCongress on users collection in firebase firestore
-      const userDocRef = doc(db, "users", currentUser.uid);
-      await updateDoc(userDocRef, {
-        joinCongress: arrayUnion({
-          id: selectedCongress.id,
-          name: selectedCongress.name,
-          address: selectedCongress.address,
-          contactInfo: selectedCongress.contactInfo,
-          startTime: selectedCongress.startTime,
-          endTime: selectedCongress.endTime,
-          date: selectedCongress.date,
-        }),
-      });
-
-      console.log("Joined congress added to user's document successfully");
 
       setJoinCongress(true);
       setClickCongress(false);
@@ -87,7 +57,7 @@ export default function CongresUser({ congressData, currentUser }) {
   return (
     <div className="flex flex-col px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10">
       <div className="flex justify-end w-full border-b-2 pb-2">
-        <form className="flex items-center w-full md:w-96">
+        <form id="" className="flex items-center w-full md:w-96">
           <div className="relative w-full">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
               <svg
@@ -222,3 +192,4 @@ export default function CongresUser({ congressData, currentUser }) {
     </div>
   );
 }
+export default CongresUser;
