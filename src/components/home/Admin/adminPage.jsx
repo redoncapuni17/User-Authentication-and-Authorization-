@@ -2,9 +2,10 @@ import React, { Suspense, lazy, useState } from "react";
 
 import { FaUserFriends } from "react-icons/fa";
 import AdminDashboard from "./adminDashboard";
+
+import { MdDashboard } from "react-icons/md";
 import { NavBar } from "../../navbar.jsx";
 import { SideBar } from "../../sidebar.jsx";
-import { MdDashboard } from "react-icons/md";
 
 const LazyListOfUser = lazy(() => import("./listofUsers"));
 

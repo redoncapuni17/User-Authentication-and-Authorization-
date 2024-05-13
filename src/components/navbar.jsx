@@ -21,7 +21,7 @@ export function NavBar({ toggleSidebar, userData, isSidebarOpen }) {
         </h1>
       </div>
       <div className="flex items-center text-white cursor-default">
-        You are <span className="text-red-500 ">{userData.role}</span>
+        You are,&nbsp;<span className="text-red-500 ">{userData.role}</span>
       </div>
     </nav>
   );

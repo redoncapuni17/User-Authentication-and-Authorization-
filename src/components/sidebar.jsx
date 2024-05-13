@@ -1,5 +1,5 @@
 import React from "react";
-import Logout from "..//components/logout/logout.jsx";
+import Logout from "./logout/logout.jsx";
 
 import { Link } from "react-router-dom";
 

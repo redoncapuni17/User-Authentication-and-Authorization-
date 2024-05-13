@@ -6,7 +6,9 @@ import {
   doc,
   getDoc,
   getDocs,
+  query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "./firebase";
 
@@ -46,11 +48,17 @@ export async function updatedCongressToFirestore(updatedCongress, congressId) {
 }
 
 // Function to fetch all congress data from Firestore
-export async function fetchCongressDataToFirestore() {
+export async function fetchCongressDataToFirestore(filterType) {
   let congressData = [];
   try {
     const congressCollect = collection(db, "congress");
-    const congressSnapshot = await getDocs(congressCollect);
+    let congressQuery = congressCollect;
+    if (filterType) {
+      congressQuery = query(congressCollect, where("type", "==", filterType));
+    }
+
+    const congressSnapshot = await getDocs(congressQuery);
+
     congressData = congressSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),

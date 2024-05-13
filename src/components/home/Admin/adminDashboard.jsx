@@ -1,10 +1,13 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
-
 import EventForm from "./eventForm";
 import {
   fetchCongressDataToFirestore,
   handleDeleteCongressToFirestore,
 } from "../../firebase/firestore";
+import Header from "../../header";
+import Search from "../../search";
+import Filter from "../../filter";
+
 const LazyCongressAdmin = lazy(() => import("./congressAdmin"));
 
 export default function AdminDashboard({ currentUser }) {
@@ -13,21 +16,29 @@ export default function AdminDashboard({ currentUser }) {
   const [filteredCongressLists, setFilteredCongressLists] = useState([]);
   const [openDropDownMenu, setOpenDropDownMenu] = useState(false);
   const [editCongress, setEditCongress] = useState(false);
-  // Update the loading state when data fetching and updating are complete
-  const fetchData = async () => {
-    try {
-      const congress = await fetchCongressDataToFirestore();
+  const [filterType, setFilterType] = useState("");
+  const [loading, setLoading] = useState(false);
 
-      setCongressLists(congress);
-    } catch (error) {
-      console.error("Error fetching congress data: ", error);
-    }
-  };
-
-  // Fetch data when the component mounts
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        let congress;
+        if (filterType) {
+          congress = await fetchCongressDataToFirestore(filterType);
+        } else {
+          congress = await fetchCongressDataToFirestore();
+        }
+        setCongressLists(congress);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error("Error fetching congress data: ", error);
+      }
+    };
+
     fetchData();
-  }, []);
+  }, [filterType]); // Include filterType as a dependency
 
   // Delete Congress From Firebase
   const handleDeleteCongress = async (congressId) => {
@@ -82,64 +93,31 @@ export default function AdminDashboard({ currentUser }) {
     setCongressLists([newCongress, ...congressLists]);
   };
 
-  const handleFilteredInput = (e) => {
-    setSearchInput(e.target.value);
-  };
-
   useEffect(() => {
     setFilteredCongressLists(filteredCongress);
   }, [searchInput, congressLists]);
 
   return (
     <main className="w-full h-screen px-5 py-5 ">
-      <header className="bg-gradient-to-r from-gray-600 to-gray-800 shadow-lg rounded-lg p-6 overflow-hidden ">
-        <div className="px-6 py-4 font-mono">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-100 mb-2 cursor-default">
-            Welcome,{" "}
-            <span className="text-red-500 uppercase ">{currentUser.name}</span>!
-          </h2>
-          <p className="text-sm text-gray-300">
-            Here's your personalized dashboard.
-          </p>
-        </div>
-      </header>
+      <Header currentUser={currentUser} />
       <section className="flex flex-col md:flex-row ">
-        <section className="w-full  sm:w-4/12 py-3 ">
+        <div className="w-full  sm:w-4/12 py-3 ">
           <EventForm
             addCongress={addCongress}
             adminUid={currentUser}
             editCongress={editCongress}
-            updateCongressList={updateCongressList} // Pass the function to update congressLists
+            updateCongressList={updateCongressList}
           />
-        </section>
-        <section className="w-full md:w-3/4 p-3">
-          <div className="m-3">
-            <form className="flex  items-center">
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                  placeholder="Search by congress name..."
-                  value={searchInput}
-                  onChange={handleFilteredInput}
-                />
-                <svg
-                  className="absolute top-1/2 transform -translate-y-1/2 right-3 w-4 h-4 text-gray-500 dark:text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 18 20"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2"
-                  />
-                </svg>
-              </div>
-            </form>
+        </div>
+        <div className="w-full md:w-3/4 p-3 ">
+          <div className="flex justify-between items-center w-full mb-3 ">
+            <div className="relative  w-3/5">
+              <Search
+                setSearchInput={setSearchInput}
+                searchInput={searchInput}
+              />
+            </div>
+            <Filter setFilterType={setFilterType} filterType={filterType} />
           </div>
 
           <Suspense fallback={<p>Loading Congress...</p>}>
@@ -149,10 +127,11 @@ export default function AdminDashboard({ currentUser }) {
               openDropDownMenu={openDropDownMenu}
               setOpenDropDownMenu={setOpenDropDownMenu}
               handleEditCongress={handleEditCongress}
-              updatedCongressLists={congressLists} // Pass updated congressLists
+              updatedCongressLists={congressLists}
+              loading={loading}
             />
           </Suspense>
-        </section>
+        </div>
       </section>
     </main>
   );
