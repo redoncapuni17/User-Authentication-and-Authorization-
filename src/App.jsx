@@ -1,14 +1,16 @@
 import React from "react";
 
-import Login from "./components/auth/login";
-// import Register from "./components/auth/register";
-import Home from "./components/home/home";
+import Login from "./components/Controller/auth/login";
+
 import { AuthProvider } from "./contexts/authContext";
 import { useRoutes } from "react-router-dom";
-import AdminDashboard from "./components/home/Admin/adminDashboard";
-import ListOfUser from "./components/home/Admin/listofUsers";
+import AdminDashboard from "./components/Controller/Admin/adminDashboard";
+import ListOfUser from "./components/Controller/Admin/listofUsers";
+import Home from "./components/Controller/home";
 
-const LazyRegister = React.lazy(() => import("./components/auth/register"));
+const LazyRegister = React.lazy(() =>
+  import("./components/Controller/auth/register")
+);
 
 function App() {
   const routesArray = [

@@ -29,6 +29,13 @@ export default {
           "-ms-overflow-style": "none",
           "scrollbar-width": "none",
         },
+        ".w-fulll": {
+          width: "100vh",
+        },
+
+        ".h-98": {
+          height: "647px",
+        },
       };
       addUtilities(newUtilities);
     },
