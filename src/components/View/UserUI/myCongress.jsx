@@ -18,7 +18,7 @@ function MyCongress({
           <Search searchInput={searchInput} setSearchInput={setSearchInput} />
         </div>
       </div>
-      <div className="overflow-y-scroll shadow-2xl  no-scrollbar rounded-lg border border-gray-300 pb-44 ">
+      <div className="overflow-y-scroll shadow-2xl  no-scrollbar rounded-lg border border-gray-300 pb-20 ">
         <table className="min-w-full divide-y divide-gray-200   ">
           <thead className="bg-gray-200">
             <tr>
@@ -45,7 +45,7 @@ function MyCongress({
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-gray-200 animate-show-component">
             {filteredTable === undefined || filteredTable.length === 0 ? (
               <tr>
                 <td

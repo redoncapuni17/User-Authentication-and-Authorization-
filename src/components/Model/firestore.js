@@ -7,7 +7,9 @@ import {
   getDoc,
   getDocs,
   limit,
+  orderBy,
   query,
+  startAfter,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -48,16 +50,24 @@ export async function updatedCongressToFirestore(updatedCongress, congressId) {
   }
 }
 
-// Function to fetch all congress data from Firestore
-export async function fetchCongressDataToFirestore(filterType) {
+export async function fetchCongressDataToFirestore(filterType, lastDoc = null) {
   let congressData = [];
+  const PAGE_SIZE = 5; // Number of items to fetch per page
+
   try {
     const congressCollect = collection(db, "congress");
-    let congressQuery = congressCollect;
+    let congressQuery = query(congressCollect, limit(PAGE_SIZE));
+
     if (filterType) {
-      congressQuery = query(congressCollect, where("type", "==", filterType));
-    } else {
-      congressQuery = query(congressCollect);
+      congressQuery = query(
+        congressCollect,
+        where("type", "==", filterType),
+        limit(PAGE_SIZE)
+      );
+    }
+
+    if (lastDoc) {
+      congressQuery = query(congressQuery, startAfter(lastDoc));
     }
 
     const congressSnapshot = await getDocs(congressQuery);
@@ -71,7 +81,6 @@ export async function fetchCongressDataToFirestore(filterType) {
     const currentTime = new Date();
     for (const congress of congressData) {
       const congressRef = doc(db, "congress", congress.id);
-
       const endTimeDate = new Date(`${congress.date}, ${congress.endTime}`);
 
       if (endTimeDate > currentTime) {
@@ -84,11 +93,15 @@ export async function fetchCongressDataToFirestore(filterType) {
         });
       }
     }
+
+    return {
+      data: congressData,
+      lastVisible: congressSnapshot.docs[congressSnapshot.docs.length - 1],
+    };
   } catch (error) {
     console.error("Error fetching congress data: ", error);
+    return { data: [], lastVisible: null };
   }
-
-  return congressData;
 }
 
 // Function to delete congress data in Firestore

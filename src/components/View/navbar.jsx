@@ -4,7 +4,7 @@ import { AiOutlineBars } from "react-icons/ai";
 
 export function NavBar({ toggleSidebar, userData, isSidebarOpen }) {
   return (
-    <nav className="flex  items-center justify-between bg-slate-800 px-5 py-2  ">
+    <nav className="flex items-center justify-between bg-slate-800 px-5 py-2  ">
       <div className="flex items-center">
         <button onClick={toggleSidebar} className="text-gray-100">
           {isSidebarOpen ? (

@@ -6,6 +6,8 @@ export default {
       animation: {
         "fade-right": "fade-right 0.3s ease-out",
         "fade-left": "fade-left 0.3s ease-out",
+        "show-component": "show-component 0.3s ease-out",
+        "show-component2": "show-component 0.1s ease-out",
       },
       keyframes: {
         "fade-right": {
@@ -15,6 +17,14 @@ export default {
         "fade-left": {
           "0%": { opacity: "0", transform: "translate(-20px)" },
           "100%": { opacity: "1", transform: "translate(0)" },
+        },
+        "show-component": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        "show-component2": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
         },
       },
     },
@@ -32,7 +42,6 @@ export default {
         ".w-fulll": {
           width: "100vh",
         },
-
         ".h-98": {
           height: "647px",
         },

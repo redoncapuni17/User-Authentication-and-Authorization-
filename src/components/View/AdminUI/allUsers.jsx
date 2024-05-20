@@ -38,7 +38,7 @@ export default function AllUsers({
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y  divide-gray-200 overflow-y-auto">
+          <tbody className="bg-white divide-y  divide-gray-200 overflow-y-auto animate-show-component">
             {filteredTable.map(
               (user) =>
                 user.role !== "admin" && (

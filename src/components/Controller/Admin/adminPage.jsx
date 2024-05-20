@@ -23,7 +23,7 @@ export default function AdminPage({
   };
 
   return (
-    <div className=" flex flex-col xl:w-screen lg:w-screen md:w-screen sm:w-screen  ">
+    <div className=" flex flex-col ">
       <NavBar
         toggleSidebar={toggleSidebar}
         userData={userData}

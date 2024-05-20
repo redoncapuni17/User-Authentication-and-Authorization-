@@ -13,6 +13,8 @@ function CongresUser({
   setFilterType,
   filterType,
   loading,
+  hasMore,
+  fetchData,
 }) {
   const [clickCongress, setClickCongress] = useState(false);
   const [joinCongress, setJoinCongress] = useState(false);
@@ -60,9 +62,9 @@ function CongresUser({
   }, [searchInput, congressData]);
 
   return (
-    <div className="flex flex-col   sm:px-4 md:px-6 lg:px-8 xl:px-2 xl:pt-7 ">
-      <div className="sm:flex sm:flex-row flex-col   ">
-        <div className="sm:flex sm:flex-row flex-col ">
+    <div className="flex flex-col sm:px-4 md:px-6 lg:px-8 xl:px-2 xl:pt-7">
+      <div className="sm:flex sm:flex-row flex-col">
+        <div className="sm:flex sm:flex-row flex-col">
           <SelectedCongress
             clickCongress={clickCongress}
             joinCongress={joinCongress}
@@ -73,10 +75,10 @@ function CongresUser({
             alreadyJoinedMessage={alreadyJoinedMessage}
           />
         </div>
-        <div className="flex flex-col lg:w-full ">
-          <div className="flex justify-end w-full    ">
-            <div className="relative flex justify-between  w-full   items-center border-b  p-2   ">
-              <div className="relative w-96 ">
+        <div className="flex flex-col w-full">
+          <div className="flex justify-end w-full">
+            <div className="relative flex justify-between w-full items-center border-b p-2">
+              <div className="relative w-full lg:w-96">
                 <Search
                   setSearchInput={setSearchInput}
                   searchInput={searchInput}
@@ -85,13 +87,14 @@ function CongresUser({
               <Filter filterType={filterType} setFilterType={setFilterType} />
             </div>
           </div>
-          <div className="relative h-96 overflow-scroll sm:h-96 md:h-96 sm:overflow-scroll no-scrollbar bg-slate-50 grid sm:grid md:gird lg:grid grid-flow-row gap-5   text-neutral-600 grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 w-full p-3">
-            <UserCongress
-              filteredCongressData={filteredCongressData}
-              handleClickCongress={handleClickCongress}
-              loading={loading}
-            />
-          </div>
+
+          <UserCongress
+            filteredCongressData={filteredCongressData}
+            handleClickCongress={handleClickCongress}
+            loading={loading}
+            hasMore={hasMore}
+            fetchData={fetchData}
+          />
         </div>
       </div>
     </div>

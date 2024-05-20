@@ -8,27 +8,37 @@ export default function UserDashboard({ currentUser }) {
   const [congressLists, setCongressLists] = useState([]);
   const [filterType, setFilterType] = useState("");
   const [loading, setLoading] = useState(false);
+  const [lastVisible, setLastVisible] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
 
   // Function to fetch congress data from Firestore
-  useEffect(() => {
-    const fetchCongressData = async () => {
-      try {
-        setLoading(true);
-        let congressData;
-        if (filterType) {
-          congressData = await fetchCongressDataToFirestore(filterType);
-        } else {
-          congressData = await fetchCongressDataToFirestore();
+  const fetchData = async (isLoadMore = false) => {
+    try {
+      setLoading(true);
+      const result = await fetchCongressDataToFirestore(
+        filterType,
+        isLoadMore ? lastVisible : null
+      );
+      setLoading(false);
+      if (result.data.length === 0) {
+        setHasMore(false);
+      } else {
+        setCongressLists((prev) =>
+          isLoadMore ? [...prev, ...result.data] : result.data
+        );
+        setLastVisible(result.lastVisible);
+        if (result.data.length < 5) {
+          setHasMore(false);
         }
-        setCongressLists(congressData);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.error("Error fetching congress data: ", error);
       }
-    };
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching congress data: ", error);
+    }
+  };
 
-    fetchCongressData();
+  useEffect(() => {
+    fetchData();
   }, [filterType]);
 
   return (
@@ -42,6 +52,8 @@ export default function UserDashboard({ currentUser }) {
             loading={loading}
             setFilterType={setFilterType}
             filterType={filterType}
+            hasMore={hasMore}
+            fetchData={() => fetchData(true)}
           />
         </Suspense>
       </main>

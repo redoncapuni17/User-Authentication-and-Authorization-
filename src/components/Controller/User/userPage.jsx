@@ -28,7 +28,7 @@ export default function UserPage({
         isSidebarOpen={isSidebarOpen}
       />
 
-      <div className="flex">
+      <div className="flex ">
         <SideBar
           isSidebarOpen={isSidebarOpen}
           handleDashboard={handleDashboard}

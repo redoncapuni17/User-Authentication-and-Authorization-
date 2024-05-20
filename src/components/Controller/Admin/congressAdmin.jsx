@@ -8,6 +8,8 @@ export default function CongressAdmin({
   setOpenDropDownMenu,
   handleEditCongress,
   loading,
+  hasMore,
+  fetchData,
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,6 +63,8 @@ export default function CongressAdmin({
         isModalOpen={isModalOpen}
         handleCloseModal={handleCloseModal}
         loading={loading}
+        hasMore={hasMore}
+        fetchData={fetchData}
       />
     </main>
   );

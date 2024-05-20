@@ -14,7 +14,7 @@ function SelectedCongress({
         joinCongress ? (
           ``
         ) : (
-          <div className="lg:w-96  flex flex-col justify-center items-center border-r-2 border-gray-300">
+          <div className="lg:w-96  flex flex-col justify-center items-center border-r-2 border-gray-300 animate-show-component2">
             <section
               className={`w-72 flex flex-col ${
                 selectedCongress.type === "passive"

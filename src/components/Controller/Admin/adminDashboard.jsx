@@ -18,29 +18,38 @@ export default function AdminDashboard({ currentUser }) {
   const [editCongress, setEditCongress] = useState(false);
   const [filterType, setFilterType] = useState("");
   const [loading, setLoading] = useState(false);
+  const [lastVisible, setLastVisible] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
+
+  const fetchData = async (isLoadMore = false) => {
+    try {
+      setLoading(true);
+      const result = await fetchCongressDataToFirestore(
+        filterType,
+        isLoadMore ? lastVisible : null
+      );
+      setLoading(false);
+      if (result.data.length === 0) {
+        setHasMore(false);
+      } else {
+        setCongressLists((prev) =>
+          isLoadMore ? [...prev, ...result.data] : result.data
+        );
+        setLastVisible(result.lastVisible);
+        if (result.data.length < 5) {
+          setHasMore(false);
+        }
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching congress data: ", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        let congress;
-        if (filterType) {
-          congress = await fetchCongressDataToFirestore(filterType);
-        } else {
-          congress = await fetchCongressDataToFirestore();
-        }
-        setCongressLists(congress);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.error("Error fetching congress data: ", error);
-      }
-    };
-
     fetchData();
-  }, [filterType]); // Include filterType as a dependency
+  }, [filterType]);
 
-  // Delete Congress From Firebase
   const handleDeleteCongress = async (congressId) => {
     try {
       if (!congressId) {
@@ -61,7 +70,6 @@ export default function AdminDashboard({ currentUser }) {
     }
   };
 
-  // Find the current Congress for editing
   const handleEditCongress = (congressId) => {
     const selectedCongress = congressLists.find(
       (congress) => congress.id === congressId
@@ -71,11 +79,9 @@ export default function AdminDashboard({ currentUser }) {
 
   const updateCongressList = (updatedCongress) => {
     setCongressLists((prevCongressLists) => {
-      // Find the index of the updated Congress in the array
       const index = prevCongressLists.findIndex(
         (congress) => congress.id === updatedCongress.id
       );
-      // If the Congress is found, update it, otherwise just return the previous state
       if (index !== -1) {
         const updatedCongressList = [...prevCongressLists];
         updatedCongressList[index] = updatedCongress;
@@ -98,10 +104,10 @@ export default function AdminDashboard({ currentUser }) {
   }, [searchInput, congressLists]);
 
   return (
-    <main className="w-full h-98 overflow-y-auto  px-5 py-5 ">
+    <main className="w-full h-98 overflow-y-auto px-5 py-5">
       <Header currentUser={currentUser} />
-      <section className="flex flex-col md:flex-row  ">
-        <div className="xl:w-96 lg:w-96 md:w-full sm:w-full py-3   h-full    ">
+      <section className="flex flex-col md:flex-row">
+        <div className="xl:w-96 lg:w-96 md:w-full sm:w-full py-3 h-full">
           <EventForm
             addCongress={addCongress}
             adminUid={currentUser}
@@ -109,9 +115,9 @@ export default function AdminDashboard({ currentUser }) {
             updateCongressList={updateCongressList}
           />
         </div>
-        <div className="w-full md:w-3/4 lg:p-3   ">
-          <div className="flex justify-between items-center w-full mb-3 ">
-            <div className="relative  w-3/5">
+        <div className="w-full md:w-3/4 lg:p-3">
+          <div className="flex justify-between items-center w-full mb-3">
+            <div className="relative w-3/5">
               <Search
                 setSearchInput={setSearchInput}
                 searchInput={searchInput}
@@ -129,6 +135,8 @@ export default function AdminDashboard({ currentUser }) {
               handleEditCongress={handleEditCongress}
               updatedCongressLists={congressLists}
               loading={loading}
+              hasMore={hasMore}
+              fetchData={() => fetchData(true)}
             />
           </Suspense>
         </div>
