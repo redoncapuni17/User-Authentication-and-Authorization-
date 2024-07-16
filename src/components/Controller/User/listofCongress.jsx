@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   fetchJoinedCongressFromFirestore,
   handleDeleteCongressFromUserToFirestore,
-} from "../../Model/firestore";
+} from "../../Model/firestoreUser";
 import MyCongress from "../../View/UserUI/myCongress";
 
 export default function ListOfCongress({ currentUser }) {

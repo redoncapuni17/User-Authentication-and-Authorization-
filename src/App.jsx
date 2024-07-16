@@ -37,7 +37,7 @@ function App() {
         {
           path: "dashboard",
           element: <AdminDashboard />,
-          index: false,
+          index: true,
         },
         {
           path: "users",

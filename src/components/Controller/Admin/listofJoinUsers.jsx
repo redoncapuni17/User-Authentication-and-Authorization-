@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../contexts/authContext";
-import { fetchAllJoinUsersFromFirestore } from "../../Model/firestore";
+import { fetchAllJoinUsersFromFirestore } from "../../Model/firestoreAdmin";
 import ModalComponent from "../../View/AdminUI/modalComponent";
 
 function ListOfJoinUsers({ onClose, congressName, congress }) {
   const { currentUser } = useAuth();
   const [allJoinUsers, setAllJoinUsers] = useState([]);
-  const [animation, setAnimation] = useState(false); // State to control modal visibility
+  const [animation, setAnimation] = useState(false);
 
   useEffect(() => {
     const fetchAllJoinUsers = async () => {
@@ -16,7 +16,7 @@ function ListOfJoinUsers({ onClose, congressName, congress }) {
           return;
         }
 
-        const users = await fetchAllJoinUsersFromFirestore(congress.id); // Call fetchAllJoinUsers with the congress ID
+        const users = await fetchAllJoinUsersFromFirestore(congress.id);
 
         if (users) {
           setAllJoinUsers(users);

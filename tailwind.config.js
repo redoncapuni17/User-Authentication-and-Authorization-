@@ -8,6 +8,7 @@ export default {
         "fade-left": "fade-left 0.3s ease-out",
         "show-component": "show-component 0.3s ease-out",
         "show-component2": "show-component 0.1s ease-out",
+        "zoom-in": "zoom-in 0.5s ease-in",
       },
       keyframes: {
         "fade-right": {
@@ -25,6 +26,10 @@ export default {
         "show-component2": {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
+        },
+        "zoom-in": {
+          "0%": { opacity: "0", transform: "scale(0)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
         },
       },
     },

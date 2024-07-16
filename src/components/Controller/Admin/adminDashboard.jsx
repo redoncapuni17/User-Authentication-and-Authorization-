@@ -3,10 +3,8 @@ import EventForm from "./eventForm";
 import Header from "../../View/header";
 import Search from "../../View/search";
 import Filter from "../../View/filter";
-import {
-  fetchCongressDataToFirestore,
-  handleDeleteCongressToFirestore,
-} from "../../Model/firestore";
+import { handleDeleteCongressToFirestore } from "../../Model/firestoreAdmin";
+import { fetchCongressDataToFirestore } from "../../Model/firestoreAdmin";
 
 const LazyCongressAdmin = lazy(() => import("./congressAdmin"));
 
@@ -133,7 +131,7 @@ export default function AdminDashboard({ currentUser }) {
               openDropDownMenu={openDropDownMenu}
               setOpenDropDownMenu={setOpenDropDownMenu}
               handleEditCongress={handleEditCongress}
-              updatedCongressLists={congressLists}
+              updatedCongressLists={filteredCongressLists}
               loading={loading}
               hasMore={hasMore}
               fetchData={() => fetchData(true)}

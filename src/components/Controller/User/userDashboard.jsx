@@ -1,7 +1,7 @@
 import { Suspense, lazy, useEffect, useState } from "react";
 
 import Header from "../../View/header";
-import { fetchCongressDataToFirestore } from "../../Model/firestore";
+import { fetchCongressDataToFirestore } from "../../Model/firestoreAdmin";
 const LazyCongressUser = lazy(() => import("./congresUser"));
 
 export default function UserDashboard({ currentUser }) {

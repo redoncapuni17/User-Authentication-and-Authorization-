@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
+import CreateCongress from "../../View/AdminUI/createCongress";
 import {
   addCongressToFirestore,
   searchCongressExisting,
   updatedCongressToFirestore,
-} from "../../Model/firestore";
-import CreateCongress from "../../View/AdminUI/createCongress";
+} from "../../Model/firestoreAdmin";
 
 export default function EventForm({
   addCongress,

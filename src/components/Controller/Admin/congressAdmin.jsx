@@ -34,10 +34,17 @@ export default function CongressAdmin({
         setIsMenuOpen(false); // Close the menu when clicking outside
       }
     }
+    function handleKeyDown(event) {
+      if (event.key === "Escape") {
+        setIsModalOpen(false);
+      }
+    }
 
     document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [menuRef]);
 

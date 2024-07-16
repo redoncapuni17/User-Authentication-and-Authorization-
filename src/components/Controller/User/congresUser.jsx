@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { handleJoinCongresstoFirestore } from "../../Model/firestore";
+import { handleJoinCongresstoFirestore } from "../../Model/firestoreUser";
 
 import Search from "../../View/search";
 import Filter from "../../View/filter";

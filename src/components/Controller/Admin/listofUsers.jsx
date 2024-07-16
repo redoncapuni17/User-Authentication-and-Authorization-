@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchAllUsersFromFirestore } from "../../Model/firestore";
+import { fetchAllUsersFromFirestore } from "../../Model/firestoreUser";
 import AllUsers from "../../View/AdminUI/allUsers";
 
 export default function ListOfUser({ currentUser }) {
