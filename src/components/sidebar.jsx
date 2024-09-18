@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Link } from "react-router-dom";
-import Logout from "../Controller/logout";
+import Logout from "./logout";
 
 export function SideBar({
   isSidebarOpen,
@@ -53,3 +53,4 @@ export function SideBar({
     </aside>
   );
 }
+export default SideBar;

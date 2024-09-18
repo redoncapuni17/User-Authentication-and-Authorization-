@@ -2,7 +2,7 @@ import React from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { VscLoading } from "react-icons/vsc";
 import DropDownMenu from "./dropDownMenu";
-import ListOfJoinUsers from "../../Controller/Admin/listofJoinUsers";
+import ListOfJoinUsers from "../listofJoinUsers";
 
 function AdminListCongress({
   congressLists,

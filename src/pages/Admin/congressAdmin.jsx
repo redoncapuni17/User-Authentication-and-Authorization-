@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import AdminListCongress from "../../View/AdminUI/adminListCongress.jsx";
+import AdminListCongress from "./AdminUI/adminListCongress";
 
 export default function CongressAdmin({
   congressLists,

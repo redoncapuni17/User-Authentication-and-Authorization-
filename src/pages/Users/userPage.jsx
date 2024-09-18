@@ -1,9 +1,11 @@
 import { Suspense, lazy, useState } from "react";
 import { MdEventAvailable } from "react-icons/md";
 import UserDashboard from "./userDashboard";
-import { NavBar } from "../../View/navbar";
-import { SideBar } from "../../View/sidebar";
+
 import { LuLayoutDashboard } from "react-icons/lu";
+import NavBar from "../../components/navbar";
+import SideBar from "../../components/sidebar";
+
 
 const LazyListOfCongress = lazy(() => import("./listofCongress"));
 

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../../contexts/authContext";
+import { useAuth } from "../../contexts/authContext/index";
+
+import ModalComponent from "./AdminUI/modalComponent";
 import { fetchAllJoinUsersFromFirestore } from "../../Model/firestoreAdmin";
-import ModalComponent from "../../View/AdminUI/modalComponent";
 
 function ListOfJoinUsers({ onClose, congressName, congress }) {
   const { currentUser } = useAuth();

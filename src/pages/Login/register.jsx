@@ -1,21 +1,41 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/authContext";
+import { doCreateUserWithEmailAndPassword } from "../../Model/auth";
 
-export default function RegisterView({
-  userLoggedIn,
-  onSubmit,
-  name,
-  setName,
-  email,
-  setEmail,
-  isRegistering,
-  password,
-  setPassword,
-  role,
-  setRole,
-  errorMessage,
-}) {
+const Register = () => {
   const navigate = useNavigate();
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [role, setRole] = useState("user"); // Default role is user
+
+  const { userLoggedIn } = useAuth();
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (!isRegistering) {
+      setIsRegistering(true);
+      try {
+        await doCreateUserWithEmailAndPassword(name, email, password, role);
+        navigate("/home");
+      } catch (error) {
+        setErrorMessage(error.message);
+        setIsRegistering(false);
+      }
+    }
+    setIsRegistering(false);
+  };
+
+  useEffect(() => {
+    if (userLoggedIn) {
+      navigate("/home");
+    }
+  }, [userLoggedIn, navigate]);
+
   return (
     <div className="min-h-screen bg-gray-300 py-6 flex flex-col justify-center sm:py-12">
       {userLoggedIn && navigate("/home")}
@@ -109,7 +129,7 @@ export default function RegisterView({
           <div className="text-sm text-center">
             Already have an account?{" "}
             <Link
-              to={"/login"}
+              to={"/"}
               className="text-center text-sm hover:underline font-bold"
             >
               Continue
@@ -119,4 +139,6 @@ export default function RegisterView({
       </div>
     </div>
   );
-}
+};
+
+export default Register;

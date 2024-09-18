@@ -1,10 +1,13 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import EventForm from "./eventForm";
-import Header from "../../View/header";
-import Search from "../../View/search";
-import Filter from "../../View/filter";
-import { handleDeleteCongressToFirestore } from "../../Model/firestoreAdmin";
-import { fetchCongressDataToFirestore } from "../../Model/firestoreAdmin";
+
+import Header from "../../components/header";
+import Search from "../../components/search";
+import Filter from "../../components/filter";
+import {
+  fetchCongressDataToFirestore,
+  handleDeleteCongressToFirestore,
+} from "../../Model/firestoreAdmin";
 
 const LazyCongressAdmin = lazy(() => import("./congressAdmin"));
 

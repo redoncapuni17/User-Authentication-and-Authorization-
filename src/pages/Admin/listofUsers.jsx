@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
+import AllUsers from "./AdminUI/allUsers";
 import { fetchAllUsersFromFirestore } from "../../Model/firestoreUser";
-import AllUsers from "../../View/AdminUI/allUsers";
 
 export default function ListOfUser({ currentUser }) {
   const [allUsers, setAllUsers] = useState([]);

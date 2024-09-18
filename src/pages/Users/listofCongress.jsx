@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
+
 import {
   fetchJoinedCongressFromFirestore,
   handleDeleteCongressFromUserToFirestore,
 } from "../../Model/firestoreUser";
-import MyCongress from "../../View/UserUI/myCongress";
+import MyCongress from "./UsersUI/myCongress";
 
 export default function ListOfCongress({ currentUser }) {
   const [searchInput, setSearchInput] = useState("");

@@ -26,3 +26,4 @@ export function NavBar({ toggleSidebar, userData, isSidebarOpen }) {
     </nav>
   );
 }
+export default NavBar;

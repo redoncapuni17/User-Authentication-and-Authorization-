@@ -1,6 +1,7 @@
 import React from "react";
-import Search from "../search";
+
 import { FaTrash } from "react-icons/fa";
+import Search from "../../../components/search";
 
 function MyCongress({
   searchInput,

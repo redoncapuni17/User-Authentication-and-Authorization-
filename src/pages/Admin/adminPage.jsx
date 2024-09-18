@@ -1,11 +1,11 @@
 import React, { Suspense, lazy, useState } from "react";
 
 import { FaUserFriends } from "react-icons/fa";
-import AdminDashboard from "./adminDashboard.jsx";
-
 import { MdDashboard } from "react-icons/md";
-import { NavBar } from "../../View/navbar.jsx";
-import { SideBar } from "../../View/sidebar.jsx";
+
+import AdminDashboard from "../Admin/adminDashboard.jsx";
+import NavBar from "../../components/navbar.jsx";
+import SideBar from "../../components/sidebar.jsx";
 
 const LazyListOfUser = lazy(() => import("./listofUsers.jsx"));
 
@@ -60,7 +60,7 @@ export default function AdminPage({
 
           {showUser && (
             <Suspense fallback={<p>Loading...</p>}>
-              <LazyListOfUser currentUser={userData} />
+              <LazyListOfUser currentUser={userData}  />
             </Suspense>
           )}
         </main>

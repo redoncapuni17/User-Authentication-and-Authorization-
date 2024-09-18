@@ -1,7 +1,20 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/authContext/index";
+import { doSignOut } from "../Model/auth";
+
 import { TbLogout2 } from "react-icons/tb";
 
-export default function LogoutView({ userLoggedIn, handleNavigate }) {
+function Logout() {
+  const navigate = useNavigate();
+  const { userLoggedIn } = useAuth();
+
+  const handleNavigate = () => {
+    doSignOut().then(() => {
+      navigate("/login");
+    });
+  };
+
   return (
     <>
       {userLoggedIn ? (
@@ -16,3 +29,5 @@ export default function LogoutView({ userLoggedIn, handleNavigate }) {
     </>
   );
 }
+
+export default Logout;

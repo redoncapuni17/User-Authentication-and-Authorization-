@@ -1,11 +1,12 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import { useAuth } from "../../contexts/authContext/index";
+import { useAuth } from "../contexts/authContext/index";
 
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../Model/firebase";
+import NavBar from "./navbar";
 
-const LazyAdminPage = lazy(() => import("./Admin/adminPage"));
-const LazyUserPage = lazy(() => import("./User/userPage"));
+const LazyAdminPage = lazy(() => import("../pages/Admin/adminPage"));
+const LazyUserPage = lazy(() => import("../pages/Users/userPage"));
 
 function Home() {
   const { currentUser } = useAuth();

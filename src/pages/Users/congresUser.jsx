@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 
 import { handleJoinCongresstoFirestore } from "../../Model/firestoreUser";
 
-import Search from "../../View/search";
-import Filter from "../../View/filter";
-import SelectedCongress from "../../View/UserUI/selectedCongress";
-import UserCongress from "../../View/UserUI/userListCongress";
+import SelectedCongress from "./UsersUI/selectedCongress";
+import UserCongress from "./UsersUI/userListCongress";
+import Search from "../../components/search";
+import Filter from "../../components/filter";
 
 function CongresUser({
   congressData,
